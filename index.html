@@ -41,7 +41,6 @@
       margin-bottom: 40px;
     }
 
-    /* 3-column layout */
     .layout {
       display: flex;
       justify-content: center;
@@ -53,7 +52,6 @@
       padding-bottom: 60px;
     }
 
-    /* Card styling */
     .card, .result-card, .link-card {
       background: #ffffff;
       width: 380px;
@@ -106,24 +104,22 @@
     button:hover { background: #1c1c1e; }
     button:disabled { opacity: 0.6; cursor: default; }
 
-    /* Link box */
-    .link-card {
-      text-align: left;
+    .link-card h4 {
+      margin-top: 22px;
+      margin-bottom: 8px;
+      font-size: 17px;
+      font-weight: 700;
     }
 
-    #car-link {
-      font-size: 16px;
-      margin-top: 10px;
-      display: none;
-    }
-
-    #car-link a {
+    .link-card a {
+      display: block;
+      margin-bottom: 8px;
       color: #0071e3;
       font-weight: 600;
       text-decoration: none;
     }
 
-    #car-link a:hover {
+    .link-card a:hover {
       text-decoration: underline;
     }
 
@@ -179,10 +175,13 @@
         <div id="result">Your ideal car will appear here.</div>
       </section>
 
-      <!-- Car Link -->
+      <!-- Links + Similar Cars -->
       <section class="link-card">
-        <h3>Car Link</h3>
-        <div id="car-link"></div>
+        <h3>Car Links</h3>
+        <div id="car-links"></div>
+
+        <h4>Compare Similar Cars</h4>
+        <div id="similar-links"></div>
       </section>
 
     </div>
@@ -191,7 +190,8 @@
   <script>
     const btn = document.getElementById("find");
     const resultBox = document.getElementById("result");
-    const linkBox = document.getElementById("car-link");
+    const linksBox = document.getElementById("car-links");
+    const similarBox = document.getElementById("similar-links");
 
     btn.addEventListener("click", async () => {
       const budget = document.getElementById("budget").value.trim();
@@ -207,7 +207,8 @@
       const original = btn.textContent;
       btn.textContent = "Thinking...";
       resultBox.textContent = "Generating your recommendation…";
-      linkBox.style.display = "none";
+      linksBox.innerHTML = "";
+      similarBox.innerHTML = "";
 
       try {
         const response = await fetch("/api/car", {
@@ -221,7 +222,6 @@
         if (response.ok) {
           let carName = data.recommendation;
 
-          // Extract car model using multiple patterns
           let match =
             carName.match(/recommend(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
             carName.match(/would recommend(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
@@ -234,19 +234,26 @@
             carName = carName.split("\n")[0].trim();
           }
 
-          // Bold the car name
           const formatted = `<strong>${carName}</strong><br><br>${data.recommendation}`;
           resultBox.innerHTML = formatted;
 
-          // Create link
-          const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(carName + " car")}`;
+          // Build links
+          const encoded = encodeURIComponent(carName);
 
-          linkBox.innerHTML = `
-            <p>Find this car online:</p>
-            <a href="${searchUrl}" target="_blank">Search for ${carName}</a>
+          linksBox.innerHTML = `
+            <a href="https://www.autotrader.co.uk/car-search?model=${encoded}" target="_blank">AutoTrader UK</a>
+            <a href="https://www.parkers.co.uk/${encoded.replace(/ /g, '-')}/" target="_blank">Parkers Review</a>
+            <a href="https://www.carwow.co.uk/${encoded.replace(/ /g, '-')}" target="_blank">CarWow Overview</a>
+            <a href="https://www.honestjohn.co.uk/search?q=${encoded}" target="_blank">HonestJohn Review</a>
+            <a href="https://www.youtube.com/results?search_query=${encoded}+review" target="_blank">YouTube Reviews</a>
           `;
 
-          linkBox.style.display = "block";
+          // Similar cars
+          similarBox.innerHTML = `
+            <a href="https://www.google.com/search?q=best+alternatives+to+${encoded}" target="_blank">Best Alternatives</a>
+            <a href="https://www.google.com/search?q=cars+similar+to+${encoded}" target="_blank">Cars Similar To This</a>
+            <a href="https://www.google.com/search?q=competitors+to+${encoded}" target="_blank">Top Competitors</a>
+          `;
 
         } else {
           resultBox.textContent = data.error || "Something went wrong.";
