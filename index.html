@@ -41,6 +41,7 @@
       margin-bottom: 40px;
     }
 
+    /* 3-column layout */
     .layout {
       display: flex;
       justify-content: center;
@@ -52,7 +53,8 @@
       padding-bottom: 60px;
     }
 
-    .card, .result-card, .image-card {
+    /* Card styling */
+    .card, .result-card, .link-card {
       background: #ffffff;
       width: 380px;
       padding: 26px 24px 24px;
@@ -104,14 +106,25 @@
     button:hover { background: #1c1c1e; }
     button:disabled { opacity: 0.6; cursor: default; }
 
-    .image-card {
-      text-align: center;
+    /* Link box */
+    .link-card {
+      text-align: left;
     }
 
-    #car-photo {
-      width: 100%;
-      border-radius: 16px;
+    #car-link {
+      font-size: 16px;
+      margin-top: 10px;
       display: none;
+    }
+
+    #car-link a {
+      color: #0071e3;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    #car-link a:hover {
+      text-decoration: underline;
     }
 
     @keyframes fadeIn {
@@ -130,6 +143,7 @@
 
     <div class="layout">
 
+      <!-- Preferences -->
       <section class="card">
         <h2>Your preferences</h2>
 
@@ -159,14 +173,16 @@
         <button id="find">Find My Car</button>
       </section>
 
+      <!-- Recommendation -->
       <section class="result-card">
         <h3>Recommendation</h3>
         <div id="result">Your ideal car will appear here.</div>
       </section>
 
-      <section class="image-card">
-        <h3>Car Image</h3>
-        <img id="car-photo" alt="Car photo">
+      <!-- Car Link -->
+      <section class="link-card">
+        <h3>Car Link</h3>
+        <div id="car-link"></div>
       </section>
 
     </div>
@@ -175,7 +191,7 @@
   <script>
     const btn = document.getElementById("find");
     const resultBox = document.getElementById("result");
-    const photo = document.getElementById("car-photo");
+    const linkBox = document.getElementById("car-link");
 
     btn.addEventListener("click", async () => {
       const budget = document.getElementById("budget").value.trim();
@@ -191,7 +207,7 @@
       const original = btn.textContent;
       btn.textContent = "Thinking...";
       resultBox.textContent = "Generating your recommendation…";
-      photo.style.display = "none";
+      linkBox.style.display = "none";
 
       try {
         const response = await fetch("/api/car", {
@@ -205,6 +221,7 @@
         if (response.ok) {
           let carName = data.recommendation;
 
+          // Extract car model using multiple patterns
           let match =
             carName.match(/recommend(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
             carName.match(/would recommend(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
@@ -217,30 +234,19 @@
             carName = carName.split("\n")[0].trim();
           }
 
+          // Bold the car name
           const formatted = `<strong>${carName}</strong><br><br>${data.recommendation}`;
           resultBox.innerHTML = formatted;
 
-          // Primary image source (Unsplash)
-          const unsplashUrl = `https://source.unsplash.com/900x600/?${encodeURIComponent(carName + " car")}`;
+          // Create link
+          const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(carName + " car")}`;
 
-          // Backup image source (DuckDuckGo image proxy)
-          const fallbackUrl = `https://duckduckgo.com/i.js?o=json&q=${encodeURIComponent(carName + " car")}`;
+          linkBox.innerHTML = `
+            <p>Find this car online:</p>
+            <a href="${searchUrl}" target="_blank">Search for ${carName}</a>
+          `;
 
-          // Try Unsplash first
-          photo.src = unsplashUrl;
-          photo.onerror = async () => {
-            try {
-              const r = await fetch(fallbackUrl);
-              const j = await r.json();
-              if (j.results && j.results.length > 0) {
-                photo.src = j.results[0].image;
-              }
-            } catch (e) {
-              console.log("Image failed");
-            }
-          };
-
-          photo.style.display = "block";
+          linkBox.style.display = "block";
 
         } else {
           resultBox.textContent = data.error || "Something went wrong.";
