@@ -235,25 +235,25 @@
             carName = carName.split("\n")[0].trim();
           }
 
-          // REMOVE trailing "it", "in", "it.", "in."
-          carName = carName.replace(/\b(it|in)\.?$/i, "").trim();
+          // Strip trailing filler phrases after the model
+          carName = carName.replace(/\b(it|in|with|that|which|and)\b.*$/i, "").trim();
+          // Strip trailing punctuation
+          carName = carName.replace(/[.,;:!?]+$/, "").trim();
 
-          // Bold the car name
           const formatted = `<strong>${carName}</strong><br><br>${data.recommendation}`;
           resultBox.innerHTML = formatted;
 
           const encoded = encodeURIComponent(carName);
+          const slug = carName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
-          // Main car links
           linksBox.innerHTML = `
             <a href="https://www.autotrader.co.uk/car-search?model=${encoded}" target="_blank">AutoTrader UK</a>
-            <a href="https://www.parkers.co.uk/${encoded.replace(/ /g, '-')}/" target="_blank">Parkers Review</a>
-            <a href="https://www.carwow.co.uk/${encoded.replace(/ /g, '-')}" target="_blank">CarWow Overview</a>
+            <a href="https://www.parkers.co.uk/${slug}/" target="_blank">Parkers Review</a>
+            <a href="https://www.carwow.co.uk/${slug}" target="_blank">CarWow Overview</a>
             <a href="https://www.honestjohn.co.uk/search?q=${encoded}" target="_blank">HonestJohn Review</a>
             <a href="https://www.youtube.com/results?search_query=${encoded}+review" target="_blank">YouTube Reviews</a>
           `;
 
-          // Similar cars
           similarBox.innerHTML = `
             <a href="https://www.google.com/search?q=best+alternatives+to+${encoded}" target="_blank">Best Alternatives</a>
             <a href="https://www.google.com/search?q=cars+similar+to+${encoded}" target="_blank">Cars Similar To This</a>
