@@ -41,7 +41,6 @@
       margin-bottom: 40px;
     }
 
-    /* 3-column layout */
     .layout {
       display: flex;
       justify-content: center;
@@ -53,7 +52,6 @@
       padding-bottom: 60px;
     }
 
-    /* Card styling */
     .card, .result-card, .image-card {
       background: #ffffff;
       width: 380px;
@@ -106,7 +104,6 @@
     button:hover { background: #1c1c1e; }
     button:disabled { opacity: 0.6; cursor: default; }
 
-    /* Image box */
     .image-card {
       text-align: center;
     }
@@ -133,7 +130,6 @@
 
     <div class="layout">
 
-      <!-- Preferences -->
       <section class="card">
         <h2>Your preferences</h2>
 
@@ -163,13 +159,11 @@
         <button id="find">Find My Car</button>
       </section>
 
-      <!-- Recommendation -->
       <section class="result-card">
         <h3>Recommendation</h3>
         <div id="result">Your ideal car will appear here.</div>
       </section>
 
-      <!-- Image -->
       <section class="image-card">
         <h3>Car Image</h3>
         <img id="car-photo" alt="Car photo">
@@ -211,7 +205,6 @@
         if (response.ok) {
           let carName = data.recommendation;
 
-          // Extract car model using multiple patterns
           let match =
             carName.match(/recommend(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
             carName.match(/would recommend(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
@@ -224,13 +217,29 @@
             carName = carName.split("\n")[0].trim();
           }
 
-          // Bold the car name
           const formatted = `<strong>${carName}</strong><br><br>${data.recommendation}`;
           resultBox.innerHTML = formatted;
 
-          // Load photo
-          const url = `https://source.unsplash.com/900x600/?${encodeURIComponent(carName + " car")}`;
-          photo.src = url;
+          // Primary image source (Unsplash)
+          const unsplashUrl = `https://source.unsplash.com/900x600/?${encodeURIComponent(carName + " car")}`;
+
+          // Backup image source (DuckDuckGo image proxy)
+          const fallbackUrl = `https://duckduckgo.com/i.js?o=json&q=${encodeURIComponent(carName + " car")}`;
+
+          // Try Unsplash first
+          photo.src = unsplashUrl;
+          photo.onerror = async () => {
+            try {
+              const r = await fetch(fallbackUrl);
+              const j = await r.json();
+              if (j.results && j.results.length > 0) {
+                photo.src = j.results[0].image;
+              }
+            } catch (e) {
+              console.log("Image failed");
+            }
+          };
+
           photo.style.display = "block";
 
         } else {
