@@ -222,6 +222,7 @@
         if (response.ok) {
           let carName = data.recommendation;
 
+          // Extract car model using multiple patterns
           let match =
             carName.match(/recommend(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
             carName.match(/would recommend(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
@@ -234,12 +235,16 @@
             carName = carName.split("\n")[0].trim();
           }
 
+          // REMOVE trailing "it", "in", "it.", "in."
+          carName = carName.replace(/\b(it|in)\.?$/i, "").trim();
+
+          // Bold the car name
           const formatted = `<strong>${carName}</strong><br><br>${data.recommendation}`;
           resultBox.innerHTML = formatted;
 
-          // Build links
           const encoded = encodeURIComponent(carName);
 
+          // Main car links
           linksBox.innerHTML = `
             <a href="https://www.autotrader.co.uk/car-search?model=${encoded}" target="_blank">AutoTrader UK</a>
             <a href="https://www.parkers.co.uk/${encoded.replace(/ /g, '-')}/" target="_blank">Parkers Review</a>
