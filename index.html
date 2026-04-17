@@ -5,9 +5,7 @@
   <title>Car Matcher – Find Your Perfect Car</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -17,11 +15,7 @@
       color: #1d1d1f;
     }
 
-    .page {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+    .page { min-height: 100vh; display: flex; flex-direction: column; }
 
     header {
       padding: 18px 32px;
@@ -30,22 +24,7 @@
       justify-content: space-between;
     }
 
-    .logo {
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      font-size: 14px;
-      text-transform: uppercase;
-    }
-
-    .nav {
-      font-size: 14px;
-      color: #6e6e73;
-    }
-
-    .nav span {
-      margin-left: 18px;
-      cursor: default;
-    }
+    .logo { font-weight: 700; letter-spacing: 0.06em; font-size: 14px; text-transform: uppercase; }
 
     .hero {
       flex: 1;
@@ -56,29 +35,7 @@
       padding: 40px 16px 60px;
     }
 
-    h1 {
-      font-size: 44px;
-      font-weight: 700;
-      margin: 10px 0 6px;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(0,0,0,0.04);
-      font-size: 12px;
-      color: #6e6e73;
-    }
-
-    .badge-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #34c759;
-    }
+    h1 { font-size: 44px; font-weight: 700; margin: 10px 0 6px; }
 
     .subtitle {
       font-size: 18px;
@@ -96,7 +53,7 @@
       max-width: 1100px;
     }
 
-    .card {
+    .card, .result-card {
       background: #ffffff;
       width: 380px;
       padding: 26px 24px 24px;
@@ -107,39 +64,19 @@
       opacity: 0;
     }
 
-    .card h2 {
-      margin: 0 0 4px;
-      font-size: 22px;
-    }
+    label { display: block; margin-top: 14px; margin-bottom: 4px; font-size: 14px; font-weight: 600; }
 
-    .card-caption {
-      font-size: 13px;
-      color: #86868b;
-      margin-bottom: 18px;
-    }
-
-    label {
-      display: block;
-      margin-top: 14px;
-      margin-bottom: 4px;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    input,
-    select {
+    input, select {
       width: 100%;
       padding: 11px 12px;
       border-radius: 12px;
       border: 1px solid #d2d2d7;
       font-size: 15px;
-      outline: none;
       background: #f9f9fb;
-      transition: border 0.15s, box-shadow 0.15s, background 0.15s;
+      transition: 0.15s;
     }
 
-    input:focus,
-    select:focus {
+    input:focus, select:focus {
       border-color: #0071e3;
       box-shadow: 0 0 0 3px rgba(0,113,227,0.18);
       background: #ffffff;
@@ -156,114 +93,40 @@
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.18s, transform 0.1s, box-shadow 0.18s;
+      transition: 0.18s;
       box-shadow: 0 14px 30px rgba(0,0,0,0.18);
     }
 
-    button:hover {
-      background: #1c1c1e;
-    }
+    button:hover { background: #1c1c1e; }
+    button:disabled { opacity: 0.6; cursor: default; }
 
-    button:active {
-      transform: translateY(1px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.18);
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: default;
-      box-shadow: none;
-      transform: none;
-    }
-
-    .result-card {
-      background: rgba(255,255,255,0.9);
-      width: 380px;
-      padding: 22px 22px 20px;
-      border-radius: 22px;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.06);
-      text-align: left;
-      animation: fadeIn 0.7s ease forwards;
-      opacity: 0;
-    }
-
-    .result-label {
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #86868b;
-      margin-bottom: 6px;
-    }
-
-    #result {
-      font-size: 17px;
-      line-height: 1.5;
-      color: #1d1d1f;
-      white-space: pre-wrap;
-    }
-
-    .hint {
-      margin-top: 10px;
-      font-size: 12px;
-      color: #a1a1a6;
-    }
-
-    footer {
-      padding: 14px 24px 20px;
-      font-size: 12px;
-      color: #86868b;
-      text-align: center;
+    #car-photo {
+      width: 100%;
+      border-radius: 16px;
+      margin-top: 16px;
+      display: none;
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(18px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 840px) {
-      h1 {
-        font-size: 34px;
-      }
-      .card,
-      .result-card {
-        width: 100%;
-        max-width: 380px;
-      }
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
+
 <body>
   <div class="page">
     <header>
       <div class="logo">CAR MATCHER</div>
-      <div class="nav">
-        <span>Overview</span>
-        <span>How it works</span>
-        <span>Contact</span>
-      </div>
     </header>
 
     <main class="hero">
-      <div class="badge">
-        <span class="badge-dot"></span>
-        <span>AI‑powered car recommendations</span>
-      </div>
-
       <h1>Find your perfect car.</h1>
-      <p class="subtitle">
-        Answer a few quick questions and get a confident, personalised recommendation in seconds.
-      </p>
+      <p class="subtitle">Answer a few quick questions and get a personalised recommendation in seconds.</p>
 
       <div class="layout">
         <section class="card">
           <h2>Your preferences</h2>
-          <p class="card-caption">Tell us how you drive and what matters most.</p>
 
           <label for="budget">Budget (£)</label>
           <input type="number" id="budget" placeholder="e.g. 15000" />
@@ -289,66 +152,68 @@
           </select>
 
           <button id="find">Find My Car</button>
-          <p class="hint">No signup. No spam. Just a clear recommendation.</p>
         </section>
 
         <section class="result-card">
-          <div class="result-label">Recommendation</div>
-          <div id="result">Your ideal car will appear here once you’ve answered the questions.</div>
+          <h3>Recommendation</h3>
+          <div id="result">Your ideal car will appear here.</div>
+          <img id="car-photo">
         </section>
       </div>
     </main>
-
-    <footer>
-      Built for learning and experimentation. Car Matcher uses an AI backend to generate suggestions based on your inputs.
-    </footer>
   </div>
 
   <script>
     const btn = document.getElementById("find");
     const resultBox = document.getElementById("result");
-    const budgetInput = document.getElementById("budget");
-    const useSelect = document.getElementById("use");
-    const fuelSelect = document.getElementById("fuel");
+    const photo = document.getElementById("car-photo");
 
     btn.addEventListener("click", async () => {
-      const budget = budgetInput.value.trim();
-      const use = useSelect.value;
-      const fuel = fuelSelect.value;
+      const budget = document.getElementById("budget").value.trim();
+      const use = document.getElementById("use").value;
+      const fuel = document.getElementById("fuel").value;
 
       if (!budget || !use || !fuel) {
-        resultBox.textContent = "Please fill in all fields so we can make a proper recommendation.";
+        resultBox.textContent = "Please fill in all fields.";
         return;
       }
 
       btn.disabled = true;
-      const originalText = btn.textContent;
+      const original = btn.textContent;
       btn.textContent = "Thinking...";
       resultBox.textContent = "Generating your recommendation…";
+      photo.style.display = "none";
 
       try {
         const response = await fetch("/api/car", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ budget, use, fuel })
         });
 
         const data = await response.json();
+
         if (response.ok) {
-          resultBox.textContent = data.recommendation || "No recommendation available.";
+          resultBox.textContent = data.recommendation;
+
+          // Extract car model from first line
+          const carName = data.recommendation.split("\n")[0];
+
+          // Load photo from Unsplash
+          const url = `https://source.unsplash.com/featured/?${encodeURIComponent(carName + " car")}`;
+          photo.src = url;
+          photo.style.display = "block";
         } else {
-          resultBox.textContent = data.error || "Something went wrong while generating a recommendation.";
+          resultBox.textContent = data.error || "Something went wrong.";
         }
       } catch (err) {
-        console.error(err);
-        resultBox.textContent = "We couldn’t reach the recommendation service. Please try again in a moment.";
-      } finally {
-        btn.disabled = false;
-        btn.textContent = originalText;
+        resultBox.textContent = "Could not reach the server.";
       }
+
+      btn.disabled = false;
+      btn.textContent = original;
     });
   </script>
 </body>
 </html>
+
