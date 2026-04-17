@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Car Matcher – Find Your Perfect Car</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <style>
     * { box-sizing: border-box; }
 
@@ -15,56 +16,61 @@
       color: #1d1d1f;
     }
 
-    .page { min-height: 100vh; display: flex; flex-direction: column; }
-
     header {
       padding: 18px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      font-size: 14px;
+      text-transform: uppercase;
     }
-
-    .logo { font-weight: 700; letter-spacing: 0.06em; font-size: 14px; text-transform: uppercase; }
 
     .hero {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       text-align: center;
-      padding: 40px 16px 60px;
+      padding: 40px 16px 20px;
     }
 
-    h1 { font-size: 44px; font-weight: 700; margin: 10px 0 6px; }
+    h1 {
+      font-size: 44px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
 
     .subtitle {
       font-size: 18px;
       color: #6e6e73;
-      max-width: 520px;
-      margin: 0 auto 32px;
+      margin-bottom: 40px;
     }
 
+    /* 3-column layout */
     .layout {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
+      align-items: flex-start;
       gap: 32px;
       width: 100%;
-      max-width: 1100px;
+      max-width: 1500px;
+      margin: 0 auto;
+      padding-bottom: 60px;
     }
 
-    .card, .result-card {
+    /* Card styling */
+    .card, .result-card, .image-card {
       background: #ffffff;
       width: 380px;
       padding: 26px 24px 24px;
       border-radius: 22px;
       box-shadow: 0 24px 50px rgba(0,0,0,0.08);
-      text-align: left;
       animation: fadeIn 0.7s ease forwards;
       opacity: 0;
     }
 
-    label { display: block; margin-top: 14px; margin-bottom: 4px; font-size: 14px; font-weight: 600; }
+    label {
+      display: block;
+      margin-top: 14px;
+      margin-bottom: 4px;
+      font-size: 14px;
+      font-weight: 600;
+    }
 
     input, select {
       width: 100%;
@@ -100,10 +106,14 @@
     button:hover { background: #1c1c1e; }
     button:disabled { opacity: 0.6; cursor: default; }
 
+    /* Image box */
+    .image-card {
+      text-align: center;
+    }
+
     #car-photo {
       width: 100%;
       border-radius: 16px;
-      margin-top: 16px;
       display: none;
     }
 
@@ -115,123 +125,125 @@
 </head>
 
 <body>
-  <div class="page">
-    <header>
-      <div class="logo">CAR MATCHER</div>
-    </header>
+  <header>CAR MATCHER</header>
 
-    <main class="hero">
-      <h1>Find your perfect car.</h1>
-      <p class="subtitle">Answer a few quick questions and get a personalised recommendation in seconds.</p>
+  <main class="hero">
+    <h1>Find your perfect car.</h1>
+    <p class="subtitle">Answer a few quick questions and get a personalised recommendation in seconds.</p>
 
-      <div class="layout">
-        <section class="card">
-          <h2>Your preferences</h2>
+    <div class="layout">
 
-          <label for="budget">Budget (£)</label>
-          <input type="number" id="budget" placeholder="e.g. 15000" />
+      <!-- Preferences -->
+      <section class="card">
+        <h2>Your preferences</h2>
 
-          <label for="use">Primary use</label>
-          <select id="use">
-            <option value="">Select an option</option>
-            <option>Daily commuting</option>
-            <option>Long distance</option>
-            <option>Family and practicality</option>
-            <option>City driving</option>
-            <option>Performance and fun</option>
-          </select>
+        <label for="budget">Budget (£)</label>
+        <input type="number" id="budget" placeholder="e.g. 15000" />
 
-          <label for="fuel">Fuel preference</label>
-          <select id="fuel">
-            <option value="">Select an option</option>
-            <option>Petrol</option>
-            <option>Diesel</option>
-            <option>Hybrid</option>
-            <option>Electric</option>
-            <option>No strong preference</option>
-          </select>
+        <label for="use">Primary use</label>
+        <select id="use">
+          <option value="">Select an option</option>
+          <option>Daily commuting</option>
+          <option>Long distance</option>
+          <option>Family and practicality</option>
+          <option>City driving</option>
+          <option>Performance and fun</option>
+        </select>
 
-          <button id="find">Find My Car</button>
-        </section>
+        <label for="fuel">Fuel preference</label>
+        <select id="fuel">
+          <option value="">Select an option</option>
+          <option>Petrol</option>
+          <option>Diesel</option>
+          <option>Hybrid</option>
+          <option>Electric</option>
+          <option>No strong preference</option>
+        </select>
 
-        <section class="result-card">
-          <h3>Recommendation</h3>
-          <div id="result">Your ideal car will appear here.</div>
-          <img id="car-photo">
-        </section>
-      </div>
-    </main>
-  </div>
+        <button id="find">Find My Car</button>
+      </section>
 
-<script>
-  const btn = document.getElementById("find");
-  const resultBox = document.getElementById("result");
-  const photo = document.getElementById("car-photo");
+      <!-- Recommendation -->
+      <section class="result-card">
+        <h3>Recommendation</h3>
+        <div id="result">Your ideal car will appear here.</div>
+      </section>
 
-  btn.addEventListener("click", async () => {
-    const budget = document.getElementById("budget").value.trim();
-    const use = document.getElementById("use").value;
-    const fuel = document.getElementById("fuel").value;
+      <!-- Image -->
+      <section class="image-card">
+        <h3>Car Image</h3>
+        <img id="car-photo" alt="Car photo">
+      </section>
 
-    if (!budget || !use || !fuel) {
-      resultBox.textContent = "Please fill in all fields.";
-      return;
-    }
+    </div>
+  </main>
 
-    btn.disabled = true;
-    const original = btn.textContent;
-    btn.textContent = "Thinking...";
-    resultBox.textContent = "Generating your recommendation…";
-    photo.style.display = "none";
+  <script>
+    const btn = document.getElementById("find");
+    const resultBox = document.getElementById("result");
+    const photo = document.getElementById("car-photo");
 
-    try {
-      const response = await fetch("/api/car", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ budget, use, fuel })
-      });
+    btn.addEventListener("click", async () => {
+      const budget = document.getElementById("budget").value.trim();
+      const use = document.getElementById("use").value;
+      const fuel = document.getElementById("fuel").value;
 
-      const data = await response.json();
-
-      if (response.ok) {
-        let carName = data.recommendation;
-
-        // Extract car model using multiple patterns
-        let match =
-          carName.match(/recommend(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
-          carName.match(/would recommend(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
-          carName.match(/suggest(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
-          carName.match(/best option is(?: the)? ([A-Za-z0-9 .\-]+)/i);
-
-        if (match && match[1]) {
-          carName = match[1].trim();
-        } else {
-          carName = carName.split("\n")[0].trim();
-        }
-
-        // Bold the car name
-        const formatted = `<strong>${carName}</strong><br><br>${data.recommendation}`;
-        resultBox.innerHTML = formatted;
-
-        // Load photo
-        const url = `https://source.unsplash.com/900x600/?${encodeURIComponent(carName + " car")}`;
-        photo.src = url;
-        photo.style.display = "block";
-
-      } else {
-        resultBox.textContent = data.error || "Something went wrong.";
+      if (!budget || !use || !fuel) {
+        resultBox.textContent = "Please fill in all fields.";
+        return;
       }
-    } catch (err) {
-      resultBox.textContent = "Could not reach the server.";
-    }
 
-    btn.disabled = false;
-    btn.textContent = original;
-  });
-</script>
+      btn.disabled = true;
+      const original = btn.textContent;
+      btn.textContent = "Thinking...";
+      resultBox.textContent = "Generating your recommendation…";
+      photo.style.display = "none";
 
+      try {
+        const response = await fetch("/api/car", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ budget, use, fuel })
+        });
 
+        const data = await response.json();
+
+        if (response.ok) {
+          let carName = data.recommendation;
+
+          // Extract car model using multiple patterns
+          let match =
+            carName.match(/recommend(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
+            carName.match(/would recommend(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
+            carName.match(/suggest(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
+            carName.match(/best option is(?: the)? ([A-Za-z0-9 .\-]+)/i);
+
+          if (match && match[1]) {
+            carName = match[1].trim();
+          } else {
+            carName = carName.split("\n")[0].trim();
+          }
+
+          // Bold the car name
+          const formatted = `<strong>${carName}</strong><br><br>${data.recommendation}`;
+          resultBox.innerHTML = formatted;
+
+          // Load photo
+          const url = `https://source.unsplash.com/900x600/?${encodeURIComponent(carName + " car")}`;
+          photo.src = url;
+          photo.style.display = "block";
+
+        } else {
+          resultBox.textContent = data.error || "Something went wrong.";
+        }
+      } catch (err) {
+        resultBox.textContent = "Could not reach the server.";
+      }
+
+      btn.disabled = false;
+      btn.textContent = original;
+    });
+  </script>
 
 </body>
 </html>
-
