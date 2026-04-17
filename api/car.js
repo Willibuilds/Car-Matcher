@@ -1,5 +1,3 @@
-import OpenAI from "openai";
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -7,10 +5,6 @@ export default async function handler(req, res) {
 
   try {
     const { budget, use, fuel } = req.body;
-
-    const client = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
-    });
 
     const prompt = `
     You are an expert automotive advisor.
@@ -26,12 +20,21 @@ export default async function handler(req, res) {
     - No emojis
     `;
 
-    const response = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }]
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.GROQ_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "llama-3.1-8b-instant",
+        messages: [{ role: "user", content: prompt }]
+      })
     });
 
-    const recommendation = response.choices[0].message.content;
+    const data = await response.json();
+
+    const recommendation = data.choices?.[0]?.message?.content || "No recommendation available";
 
     res.status(200).json({ recommendation });
 
@@ -40,3 +43,4 @@ export default async function handler(req, res) {
     res.status(500).json({ error: "Internal server error" });
   }
 }
+
