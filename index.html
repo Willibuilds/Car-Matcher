@@ -163,57 +163,68 @@
     </main>
   </div>
 
-  <script>
-    const btn = document.getElementById("find");
-    const resultBox = document.getElementById("result");
-    const photo = document.getElementById("car-photo");
+<script>
+  const btn = document.getElementById("find");
+  const resultBox = document.getElementById("result");
+  const photo = document.getElementById("car-photo");
 
-    btn.addEventListener("click", async () => {
-      const budget = document.getElementById("budget").value.trim();
-      const use = document.getElementById("use").value;
-      const fuel = document.getElementById("fuel").value;
+  btn.addEventListener("click", async () => {
+    const budget = document.getElementById("budget").value.trim();
+    const use = document.getElementById("use").value;
+    const fuel = document.getElementById("fuel").value;
 
-      if (!budget || !use || !fuel) {
-        resultBox.textContent = "Please fill in all fields.";
-        return;
-      }
+    if (!budget || !use || !fuel) {
+      resultBox.textContent = "Please fill in all fields.";
+      return;
+    }
 
-      btn.disabled = true;
-      const original = btn.textContent;
-      btn.textContent = "Thinking...";
-      resultBox.textContent = "Generating your recommendation…";
-      photo.style.display = "none";
+    btn.disabled = true;
+    const original = btn.textContent;
+    btn.textContent = "Thinking...";
+    resultBox.textContent = "Generating your recommendation…";
+    photo.style.display = "none";
 
-      try {
-        const response = await fetch("/api/car", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ budget, use, fuel })
-        });
+    try {
+      const response = await fetch("/api/car", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ budget, use, fuel })
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (response.ok) {
-          resultBox.textContent = data.recommendation;
+      if (response.ok) {
+        let carName = data.recommendation;
 
-          // Extract car model from first line
-          const carName = data.recommendation.split("\n")[0];
-
-          // Load photo from Unsplash
-          const url = `https://source.unsplash.com/featured/?${encodeURIComponent(carName + " car")}`;
-          photo.src = url;
-          photo.style.display = "block";
+        // Extract car model from "I recommend the X"
+        const match = carName.match(/recommend(?: the)? ([A-Za-z0-9 .-]+)/i);
+        if (match && match[1]) {
+          carName = match[1].trim();
         } else {
-          resultBox.textContent = data.error || "Something went wrong.";
+          carName = carName.split("\n")[0].trim();
         }
-      } catch (err) {
-        resultBox.textContent = "Could not reach the server.";
-      }
 
-      btn.disabled = false;
-      btn.textContent = original;
-    });
-  </script>
+        // Bold the car name
+        const formatted = `<strong>${carName}</strong><br><br>${data.recommendation}`;
+        resultBox.innerHTML = formatted;
+
+        // Load photo
+        const url = `https://source.unsplash.com/900x600/?${encodeURIComponent(carName + " car")}`;
+        photo.src = url;
+        photo.style.display = "block";
+
+      } else {
+        resultBox.textContent = data.error || "Something went wrong.";
+      }
+    } catch (err) {
+      resultBox.textContent = "Could not reach the server.";
+    }
+
+    btn.disabled = false;
+    btn.textContent = original;
+  });
+</script>
+
 </body>
 </html>
 
