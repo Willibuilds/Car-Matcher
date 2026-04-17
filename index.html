@@ -196,8 +196,11 @@
       if (response.ok) {
         let carName = data.recommendation;
 
-        // Extract car model from "I recommend the X"
-        const match = carName.match(/recommend(?: the)? ([A-Za-z0-9 .-]+)/i);
+        // Extract car model using multiple patterns
+        let match = carName.match(/recommend(?: the)? ([A-Za-z0-9 .\-]+)/i);
+        if (!match) match = carName.match(/would recommend(?: the)? ([A-Za-z0-9 .\-]+)/i);
+        if (!match) match = carName.match(/best option is(?: the)? ([A-Za-z0-9 .\-]+)/i);
+
         if (match && match[1]) {
           carName = match[1].trim();
         } else {
@@ -224,6 +227,7 @@
     btn.textContent = original;
   });
 </script>
+
 
 </body>
 </html>
