@@ -89,36 +89,38 @@
 </head>
 <body>
 
-    <div class="container">
-        <h1>Find Your Ideal Car</h1>
+<div class="hero">
+  <h1>Find Your Perfect Car</h1>
+  <p class="subtitle">Smart, fast and personalised recommendations powered by AI.</p>
 
-        <form id="carForm">
-            <label>Budget (£)</label>
-            <input type="number" id="budget" required>
+  <div class="card">
+    <h2>Your Preferences</h2>
 
-            <label>Primary Use</label>
-            <select id="use">
-                <option>City driving</option>
-                <option>Long-distance commuting</option>
-                <option>Family car</option>
-                <option>Performance / sporty</option>
-                <option>Off‑road</option>
-            </select>
+    <label>Budget (£)</label>
+    <input type="number" id="budget">
 
-            <label>Fuel Preference</label>
-            <select id="fuel">
-                <option>Petrol</option>
-                <option>Diesel</option>
-                <option>Hybrid</option>
-                <option>Electric</option>
-                <option>No preference</option>
-            </select>
+    <label>Primary Use</label>
+    <select id="use">
+      <option>Daily commuting</option>
+      <option>Long distance</option>
+      <option>Family</option>
+      <option>Performance</option>
+    </select>
 
-            <button type="submit">Find My Car</button>
-        </form>
+    <label>Fuel Preference</label>
+    <select id="fuel">
+      <option>Petrol</option>
+      <option>Diesel</option>
+      <option>Hybrid</option>
+      <option>Electric</option>
+    </select>
 
-        <div id="result" class="result"></div>
-    </div>
+    <button id="find">Find My Car</button>
+
+    <div id="result"></div>
+  </div>
+</div>
+
 
     <script>
         document.getElementById("carForm").addEventListener("submit", async (e) => {
