@@ -511,7 +511,82 @@
     .placeholder-text { font-size: 14px; color: #c0c0c0; font-style: italic; }
 
     /* ── Responsive ── */
+
+    /* ── Footer ── */
+    footer {
+      background: #0a0a0b;
+      color: #ffffff;
+      padding: 48px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .footer-logo span { color: #0057FF; }
+
+    .footer-tagline {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      font-weight: 300;
+    }
+
+    .footer-socials {
+      display: flex;
+      gap: 12px;
+    }
+
+    .social-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+
+    .social-icon:hover {
+      border-color: #0057FF;
+      color: #ffffff;
+      background: rgba(0,87,255,0.15);
+    }
+
+    .footer-credits {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.35);
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .footer-dot { color: rgba(255,255,255,0.2); }
+
     @media (max-width: 860px) {
+      footer { padding: 36px 20px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .footer-credits { justify-content: flex-start; }
       header { padding: 18px 20px; }
       .hero { flex-direction: column; padding: 40px 20px 36px; align-items: flex-start; }
       .layout { grid-template-columns: 1fr; }
@@ -783,6 +858,50 @@
       btn.textContent = original;
     });
   </script>
+
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-inner">
+
+      <div class="footer-brand">
+        <div class="footer-logo">Motor<span>Unite</span></div>
+        <p class="footer-tagline">Finding your perfect car, powered by AI.</p>
+      </div>
+
+      <div class="footer-socials">
+        <!-- TikTok -->
+        <a href="#" class="social-icon" aria-label="TikTok">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/>
+          </svg>
+        </a>
+        <!-- Instagram -->
+        <a href="#" class="social-icon" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
+          </svg>
+        </a>
+        <!-- X (Twitter) -->
+        <a href="#" class="social-icon" aria-label="X">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="footer-credits">
+        <span>AI powered by Groq</span>
+        <span class="footer-dot">·</span>
+        <span>Developed by William Peng and Anthropic Claude</span>
+        <span class="footer-dot">·</span>
+        <span>© 2026 Motorunite</span>
+      </div>
+
+    </div>
+  </footer>
 
 </body>
 </html>
