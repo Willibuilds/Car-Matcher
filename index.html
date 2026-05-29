@@ -681,24 +681,10 @@
         const data = await response.json();
 
         if (response.ok) {
-          let carName = data.recommendation;
+          const carName = data.car;
+          const description = data.recommendation;
 
-          let match =
-            carName.match(/recommend(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
-            carName.match(/would recommend(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
-            carName.match(/suggest(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
-            carName.match(/best option is(?: the)? ([A-Za-z0-9 .\-]+)/i);
-
-          if (match && match[1]) {
-            carName = match[1].trim();
-          } else {
-            carName = carName.split("\n")[0].trim();
-          }
-
-          carName = carName.replace(/\b(it|in|with|that|which|and)\b.*$/i, "").trim();
-          carName = carName.replace(/[.,;:!?]+$/, "").trim();
-
-          resultBox.innerHTML = `<strong>${carName}</strong>${data.recommendation}`;
+          resultBox.innerHTML = `<strong>${carName}</strong>${description}`;
           resultBox.classList.add("has-content");
 
           const encoded = encodeURIComponent(carName);
