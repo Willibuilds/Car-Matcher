@@ -2,14 +2,11 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
-
   try {
     const { budget, use, fuel } = req.body;
-
     const prompt = `
     You are an expert automotive advisor.
     Recommend the ideal car for this person based on:
-
     Budget: £${budget}
     Primary use: ${use}
     Fuel preference: ${fuel}
@@ -18,6 +15,8 @@ export default async function handler(req, res) {
     - Give ONE car recommendation
     - Keep it short and premium
     - No emojis
+    - Respond ONLY with a JSON object in this exact format, no other text:
+    {"car": "Make Model Year", "description": "Your recommendation here."}
     `;
 
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -28,19 +27,21 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: "llama-3.1-8b-instant",
-        messages: [{ role: "user", content: prompt }]
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" }
       })
     });
 
     const data = await response.json();
+    const raw = data.choices?.[0]?.message?.content || "{}";
+    const parsed = JSON.parse(raw);
 
-    const recommendation = data.choices?.[0]?.message?.content || "No recommendation available";
-
-    res.status(200).json({ recommendation });
-
+    res.status(200).json({
+      car: parsed.car || "Unknown",
+      recommendation: parsed.description || "No recommendation available"
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 }
-
