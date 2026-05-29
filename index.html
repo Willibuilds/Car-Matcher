@@ -169,11 +169,18 @@
 
     /* ── Header ── */
     header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 22px 48px;
-      background: var(--surface);
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1.5px solid var(--border);
     }
 
@@ -541,7 +548,7 @@
   </section>
 
   <!-- ── MAIN SITE ── -->
-  <div class="site-wrap">
+  <div class="site-wrap" style="padding-top: 70px;">
     <header>
       <div class="logo">Motor<span>Unite</span></div>
       <div class="badge">AI-Powered</div>
