@@ -16,7 +16,7 @@ export default async function handler(req, res) {
     - Keep it short and premium
     - No emojis
     - Respond ONLY with a JSON object in this exact format, no other text:
-    {"car": "Make Model Year", "description": "Your recommendation here."}
+    {"car": "Make Model Year", "description": "Your recommendation here.", "wiki": "Wikipedia article title for this exact car model"}
     `;
 
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -36,9 +36,20 @@ export default async function handler(req, res) {
     const raw = data.choices?.[0]?.message?.content || "{}";
     const parsed = JSON.parse(raw);
 
+    // Fetch image from Wikipedia
+    let imageUrl = null;
+    if (parsed.wiki) {
+      const wikiRes = await fetch(
+        `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(parsed.wiki)}`
+      );
+      const wikiData = await wikiRes.json();
+      imageUrl = wikiData?.originalimage?.source || wikiData?.thumbnail?.source || null;
+    }
+
     res.status(200).json({
       car: parsed.car || "Unknown",
-      recommendation: parsed.description || "No recommendation available"
+      recommendation: parsed.description || "No recommendation available",
+      imageUrl
     });
   } catch (error) {
     console.error(error);
