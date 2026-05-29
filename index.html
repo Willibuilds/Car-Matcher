@@ -4,209 +4,668 @@
   <meta charset="UTF-8" />
   <title>Car Matcher – Find Your Perfect Car</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
   <style>
-    * { box-sizing: border-box; }
+    :root {
+      --bg: #f5f5f0;
+      --surface: #ffffff;
+      --surface2: #f9f9f7;
+      --border: #e4e4de;
+      --accent: #1a1a2e;
+      --accent2: #0057FF;
+      --text: #111118;
+      --muted: #8a8a8a;
+      --card-shadow: 0 2px 24px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
-      background: linear-gradient(180deg, #fafafa, #e5e5ea);
-      color: #1d1d1f;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
     }
 
-    header {
-      padding: 18px 32px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      font-size: 14px;
+    /* ── SPLASH SECTION ── */
+    .splash {
+      position: relative;
+      height: 100vh;
+      background: #06060a;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .splash-img-wrap {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      will-change: transform, opacity;
+    }
+
+    .splash-img-wrap img {
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+      object-position: right center;
+      display: block;
+      filter: brightness(0.88);
+      will-change: transform;
+      transition: none;
+    }
+
+    /* Dark vignette overlay */
+    .splash-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(6,6,10,0.85) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Bottom fade to white */
+    .splash-fade {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 220px;
+      background: linear-gradient(to bottom, transparent, #f5f5f0);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .splash-text {
+      position: absolute;
+      left: 6vw;
+      bottom: 14vh;
+      z-index: 3;
+      text-align: left;
+      pointer-events: none;
+    }
+
+    .splash-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 20px;
+      animation: fadeInDown 1s ease forwards;
+      opacity: 0;
+      animation-delay: 0.2s;
     }
 
+    .splash-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(52px, 9vw, 110px);
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      animation: fadeInDown 1s ease forwards;
+      opacity: 0;
+      animation-delay: 0.4s;
+    }
+
+    .splash-title em {
+      font-style: normal;
+      color: var(--accent2);
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 48px;
+      left: 6vw;
+      z-index: 4;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      animation: fadeInDown 1s ease forwards;
+      opacity: 0;
+      animation-delay: 1s;
+    }
+
+    .scroll-hint span {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .scroll-arrow {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent);
+      animation: scrollPulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.15); }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── MAIN SITE ── */
+    .site-wrap {
+      position: relative;
+      background: var(--bg);
+    }
+
+    /* ── Header ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 48px;
+      background: var(--surface);
+      border-bottom: 1.5px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .logo span { color: var(--accent2); }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1.5px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--surface2);
+    }
+
+    /* ── Hero ── */
     .hero {
-      text-align: center;
-      padding: 40px 16px 20px;
+      background: var(--surface);
+      border-bottom: 1.5px solid var(--border);
+      padding: 64px 48px 56px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 40px;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 18px;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 2px;
+      background: var(--accent2);
+      border-radius: 2px;
     }
 
     h1 {
-      font-size: 44px;
-      font-weight: 700;
-      margin-bottom: 10px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(52px, 7vw, 88px);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--accent2);
     }
 
     .subtitle {
-      font-size: 18px;
-      color: #6e6e73;
-      margin-bottom: 40px;
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 320px;
+      line-height: 1.6;
+      flex-shrink: 0;
+      align-self: flex-end;
+      padding-bottom: 6px;
     }
 
+    /* ── Layout ── */
     .layout {
+      display: grid;
+      grid-template-columns: 360px 1fr 260px;
+      gap: 0;
+      max-width: 100%;
+      min-height: calc(100vh - 220px);
+    }
+
+    /* ── Panels ── */
+    .panel {
+      padding: 32px 36px;
+      border-right: 1.5px solid var(--border);
+    }
+
+    .panel:last-child { border-right: none; }
+    .panel:nth-child(1) { background: var(--surface); }
+    .panel:nth-child(2) { background: var(--bg); }
+    .panel:nth-child(3) { background: var(--surface); }
+
+    .panel-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 28px;
       display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-label-num {
+      display: inline-flex;
+      align-items: center;
       justify-content: center;
-      align-items: flex-start;
-      gap: 32px;
-      width: 100%;
-      max-width: 1500px;
-      margin: 0 auto;
-      padding-bottom: 60px;
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 9px;
+      font-weight: 700;
+      flex-shrink: 0;
     }
 
-    .card, .result-card, .link-card {
-      background: #ffffff;
-      width: 380px;
-      padding: 26px 24px 24px;
-      border-radius: 22px;
-      box-shadow: 0 24px 50px rgba(0,0,0,0.08);
-      animation: fadeIn 0.7s ease forwards;
-      opacity: 0;
-    }
-
+    /* ── Form ── */
     label {
       display: block;
-      margin-top: 14px;
-      margin-bottom: 4px;
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+      margin-top: 20px;
     }
+
+    label:first-of-type { margin-top: 0; }
 
     input, select {
       width: 100%;
-      padding: 11px 12px;
-      border-radius: 12px;
-      border: 1px solid #d2d2d7;
+      padding: 13px 16px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
       font-size: 15px;
-      background: #f9f9fb;
-      transition: 0.15s;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      background: var(--surface2);
+      color: var(--text);
+      transition: border-color 0.18s, box-shadow 0.18s;
+      appearance: none;
+      -webkit-appearance: none;
     }
+
+    input::placeholder { color: #c0c0c0; }
 
     input:focus, select:focus {
-      border-color: #0071e3;
-      box-shadow: 0 0 0 3px rgba(0,113,227,0.18);
-      background: #ffffff;
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(26,26,46,0.08);
+      background: #fff;
     }
 
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: '▾';
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+      font-size: 13px;
+    }
+
+    /* ── Button ── */
     button {
-      margin-top: 22px;
+      margin-top: 28px;
       width: 100%;
-      padding: 13px;
-      background: #000000;
-      color: #ffffff;
+      padding: 15px;
+      background: var(--accent);
+      color: #fff;
       border: none;
-      border-radius: 999px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.18s;
-      box-shadow: 0 14px 30px rgba(0,0,0,0.18);
-    }
-
-    button:hover { background: #1c1c1e; }
-    button:disabled { opacity: 0.6; cursor: default; }
-
-    .link-card h4 {
-      margin-top: 22px;
-      margin-bottom: 8px;
-      font-size: 17px;
+      border-radius: 10px;
+      font-size: 13px;
       font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+      box-shadow: 0 4px 20px rgba(26,26,46,0.2);
+      position: relative;
+      overflow: hidden;
     }
 
-    .link-card a {
+    button:hover:not(:disabled) {
+      background: #2a2a4e;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 28px rgba(26,26,46,0.28);
+    }
+
+    button:active:not(:disabled) { transform: translateY(0); }
+    button:disabled { opacity: 0.45; cursor: default; }
+
+    button.loading::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      animation: shimmer 1s infinite;
+    }
+
+    @keyframes shimmer { to { left: 100%; } }
+
+    /* ── Steps ── */
+    .steps { display: flex; gap: 5px; margin-bottom: 26px; }
+
+    .step {
+      flex: 1;
+      height: 3px;
+      background: var(--border);
+      border-radius: 3px;
+      transition: background 0.3s;
+    }
+
+    .step.active { background: var(--accent2); }
+
+    /* ── Result ── */
+    #result {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--muted);
+      transition: color 0.3s;
+    }
+
+    #result.has-content { color: var(--text); }
+
+    #result strong {
       display: block;
-      margin-bottom: 8px;
-      color: #0071e3;
-      font-weight: 600;
+      font-family: 'Syne', sans-serif;
+      font-size: 44px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 16px;
+      line-height: 1;
+    }
+
+    /* ── Links ── */
+    .links-group { margin-bottom: 24px; }
+    .links-group:last-child { margin-bottom: 0; }
+
+    .links-group-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    #car-links a, #similar-links a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      margin-bottom: 7px;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 500;
       text-decoration: none;
+      transition: border-color 0.18s, box-shadow 0.18s, transform 0.15s;
     }
 
-    .link-card a:hover {
-      text-decoration: underline;
+    #car-links a:hover, #similar-links a:hover {
+      border-color: var(--accent);
+      box-shadow: var(--card-shadow);
+      transform: translateX(3px);
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(18px); }
-      to { opacity: 1; transform: translateY(0); }
+    #car-links a::before { content: '▶'; font-size: 8px; color: var(--accent2); }
+    #similar-links a::before { content: '→'; font-size: 13px; color: var(--accent); }
+
+    .divider { height: 1.5px; background: var(--border); margin: 22px 0; }
+
+    .placeholder-text { font-size: 14px; color: #c0c0c0; font-style: italic; }
+
+    /* ── Responsive ── */
+    @media (max-width: 860px) {
+      header { padding: 18px 20px; }
+      .hero { flex-direction: column; padding: 40px 20px 36px; align-items: flex-start; }
+      .layout { grid-template-columns: 1fr; }
+      .panel { border-right: none; border-bottom: 1.5px solid var(--border); }
+      .panel:last-child { border-bottom: none; }
+      .splash-title { font-size: clamp(42px, 12vw, 80px); }
     }
   </style>
 </head>
 
 <body>
-  <header>CAR MATCHER</header>
 
-  <main class="hero">
-    <h1>Find your perfect car.</h1>
-    <p class="subtitle">Answer a few quick questions and get a personalised recommendation in seconds.</p>
+  <!-- ── SPLASH ── -->
+  <section class="splash" id="splash">
+    <div class="splash-img-wrap" id="splashImgWrap">
+      <img
+        id="splashImg"
+        src="BMW_carmatch_front_cover.jpeg"
+        alt="BMW front view"
+      />
+    </div>
+    <div class="splash-vignette"></div>
+    <div class="splash-fade"></div>
+
+    <div class="splash-text">
+      <div class="splash-eyebrow">AI-Powered Car Recommendations</div>
+      <div class="splash-title">Car<em>Match</em></div>
+    </div>
+
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- ── MAIN SITE ── -->
+  <div class="site-wrap">
+    <header>
+      <div class="logo">Car<span>Match</span></div>
+      <div class="badge">AI-Powered</div>
+    </header>
+
+    <div class="hero">
+      <div class="hero-left">
+        <div class="hero-eyebrow">Personalised recommendations</div>
+        <h1>Find your<br>perfect <em>car.</em></h1>
+      </div>
+      <p class="subtitle">Answer three quick questions and get an AI-powered car recommendation tailored to you in seconds.</p>
+    </div>
 
     <div class="layout">
 
       <!-- Preferences -->
-      <section class="card">
-        <h2>Your preferences</h2>
+      <div class="panel">
+        <div class="panel-label">
+          <span class="panel-label-num">1</span>
+          Your Preferences
+        </div>
+
+        <div class="steps">
+          <div class="step" id="step1"></div>
+          <div class="step" id="step2"></div>
+          <div class="step" id="step3"></div>
+        </div>
 
         <label for="budget">Budget (£)</label>
         <input type="number" id="budget" placeholder="e.g. 15000" />
 
         <label for="use">Primary use</label>
-        <select id="use">
-          <option value="">Select an option</option>
-          <option>Daily commuting</option>
-          <option>Long distance</option>
-          <option>Family and practicality</option>
-          <option>City driving</option>
-          <option>Performance and fun</option>
-        </select>
+        <div class="select-wrap">
+          <select id="use">
+            <option value="">Select an option</option>
+            <option>Daily commuting</option>
+            <option>Long distance</option>
+            <option>Family and practicality</option>
+            <option>City driving</option>
+            <option>Performance and fun</option>
+          </select>
+        </div>
 
         <label for="fuel">Fuel preference</label>
-        <select id="fuel">
-          <option value="">Select an option</option>
-          <option>Petrol</option>
-          <option>Diesel</option>
-          <option>Hybrid</option>
-          <option>Electric</option>
-          <option>No strong preference</option>
-        </select>
+        <div class="select-wrap">
+          <select id="fuel">
+            <option value="">Select an option</option>
+            <option>Petrol</option>
+            <option>Diesel</option>
+            <option>Hybrid</option>
+            <option>Electric</option>
+            <option>No strong preference</option>
+          </select>
+        </div>
 
         <button id="find">Find My Car</button>
-      </section>
+      </div>
 
       <!-- Recommendation -->
-      <section class="result-card">
-        <h3>Recommendation</h3>
-        <div id="result">Your ideal car will appear here.</div>
-      </section>
+      <div class="panel">
+        <div class="panel-label">
+          <span class="panel-label-num">2</span>
+          AI Recommendation
+        </div>
+        <div id="result">
+          <span class="placeholder-text">Fill in your preferences and hit "Find My Car" — your personalised recommendation will appear here.</span>
+        </div>
+      </div>
 
-      <!-- Links + Similar Cars -->
-      <section class="link-card">
-        <h3>Car Links</h3>
-        <div id="car-links"></div>
+      <!-- Links -->
+      <div class="panel">
+        <div class="panel-label">
+          <span class="panel-label-num">3</span>
+          Explore
+        </div>
 
-        <h4>Compare Similar Cars</h4>
-        <div id="similar-links"></div>
-      </section>
+        <div class="links-group">
+          <div class="links-group-title">Reviews</div>
+          <div id="car-links">
+            <span class="placeholder-text">Links appear after your recommendation.</span>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="links-group">
+          <div class="links-group-title">Compare Alternatives</div>
+          <div id="similar-links"></div>
+        </div>
+      </div>
 
     </div>
-  </main>
+  </div>
 
   <script>
+    /* ── Scroll-driven zoom + fade on splash ── */
+    const splash = document.getElementById('splash');
+    const imgWrap = document.getElementById('splashImgWrap');
+
+    function onScroll() {
+      const scrollY = window.scrollY;
+      const splashH = splash.offsetHeight;
+      const progress = Math.min(scrollY / splashH, 1); // 0 → 1
+
+      // Zoom: scale from 1 → 1.35
+      const scale = 1 + progress * 0.35;
+      // Fade: opacity 1 → 0 (starts fading at 30% scroll)
+      const fadeProgress = Math.max(0, (progress - 0.2) / 0.6);
+      const opacity = Math.max(0, 1 - fadeProgress);
+
+      imgWrap.style.transform = `scale(${scale})`;
+      imgWrap.style.opacity = opacity;
+
+      // Also fade the splash text out early
+      const textEl = splash.querySelector('.splash-text');
+      const textFade = Math.max(0, 1 - progress * 3);
+      textEl.style.opacity = textFade;
+
+      const hintEl = splash.querySelector('.scroll-hint');
+      hintEl.style.opacity = Math.max(0, 1 - progress * 4);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    /* ── Form logic ── */
     const btn = document.getElementById("find");
     const resultBox = document.getElementById("result");
     const linksBox = document.getElementById("car-links");
     const similarBox = document.getElementById("similar-links");
+    const budgetEl = document.getElementById("budget");
+    const useEl = document.getElementById("use");
+    const fuelEl = document.getElementById("fuel");
+
+    function updateSteps() {
+      document.getElementById("step1").classList.toggle("active", !!budgetEl.value.trim());
+      document.getElementById("step2").classList.toggle("active", !!useEl.value);
+      document.getElementById("step3").classList.toggle("active", !!fuelEl.value);
+    }
+
+    budgetEl.addEventListener("input", updateSteps);
+    useEl.addEventListener("change", updateSteps);
+    fuelEl.addEventListener("change", updateSteps);
 
     btn.addEventListener("click", async () => {
-      const budget = document.getElementById("budget").value.trim();
-      const use = document.getElementById("use").value;
-      const fuel = document.getElementById("fuel").value;
+      const budget = budgetEl.value.trim();
+      const use = useEl.value;
+      const fuel = fuelEl.value;
 
       if (!budget || !use || !fuel) {
-        resultBox.textContent = "Please fill in all fields.";
+        resultBox.innerHTML = '<span style="color:#0057FF;font-size:14px;">Please fill in all three fields.</span>';
         return;
       }
 
       btn.disabled = true;
+      btn.classList.add("loading");
       const original = btn.textContent;
-      btn.textContent = "Thinking...";
-      resultBox.textContent = "Generating your recommendation…";
+      btn.textContent = "Analysing...";
+      resultBox.innerHTML = '<span class="placeholder-text">Generating your recommendation…</span>';
+      resultBox.classList.remove("has-content");
       linksBox.innerHTML = "";
       similarBox.innerHTML = "";
 
@@ -222,7 +681,6 @@
         if (response.ok) {
           let carName = data.recommendation;
 
-          // Extract car model using multiple patterns
           let match =
             carName.match(/recommend(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
             carName.match(/would recommend(?: the)? ([A-Za-z0-9 .\-]+)/i) ||
@@ -235,22 +693,18 @@
             carName = carName.split("\n")[0].trim();
           }
 
-          // Strip trailing filler phrases after the model
           carName = carName.replace(/\b(it|in|with|that|which|and)\b.*$/i, "").trim();
-          // Strip trailing punctuation
           carName = carName.replace(/[.,;:!?]+$/, "").trim();
 
-          const formatted = `<strong>${carName}</strong><br><br>${data.recommendation}`;
-          resultBox.innerHTML = formatted;
+          resultBox.innerHTML = `<strong>${carName}</strong>${data.recommendation}`;
+          resultBox.classList.add("has-content");
 
           const encoded = encodeURIComponent(carName);
 
-          // ONLY YouTube Reviews
           linksBox.innerHTML = `
             <a href="https://www.youtube.com/results?search_query=${encoded}+review" target="_blank">YouTube Reviews</a>
           `;
 
-          // Similar cars
           similarBox.innerHTML = `
             <a href="https://www.google.com/search?q=best+alternatives+to+${encoded}" target="_blank">Best Alternatives</a>
             <a href="https://www.google.com/search?q=cars+similar+to+${encoded}" target="_blank">Cars Similar To This</a>
@@ -258,13 +712,14 @@
           `;
 
         } else {
-          resultBox.textContent = data.error || "Something went wrong.";
+          resultBox.innerHTML = `<span style="color:#0057FF;">${data.error || "Something went wrong."}</span>`;
         }
       } catch (err) {
-        resultBox.textContent = "Could not reach the server.";
+        resultBox.innerHTML = '<span style="color:#0057FF;">Could not reach the server.</span>';
       }
 
       btn.disabled = false;
+      btn.classList.remove("loading");
       btn.textContent = original;
     });
   </script>
