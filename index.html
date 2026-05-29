@@ -406,6 +406,39 @@
 
     .step.active { background: var(--accent2); }
 
+    /* ── Car Image ── */
+    #car-image-wrap {
+      margin-bottom: 24px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #0a0a0b;
+      display: none;
+      aspect-ratio: 16/9;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #car-image-wrap.visible { display: flex; }
+
+    #car-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+      transition: opacity 0.4s ease;
+      opacity: 0;
+    }
+
+    #car-image.loaded { opacity: 1; }
+
+    #car-image-fallback {
+      display: none;
+      color: #6b6b72;
+      font-size: 13px;
+      text-align: center;
+      padding: 20px;
+    }
+
     /* ── Result ── */
     #result {
       font-size: 15px;
@@ -573,6 +606,10 @@
           <span class="panel-label-num">2</span>
           AI Recommendation
         </div>
+        <div id="car-image-wrap">
+          <img id="car-image" alt="Recommended car" />
+          <div id="car-image-fallback">No image available</div>
+        </div>
         <div id="result">
           <span class="placeholder-text">Fill in your preferences and hit "Find My Car" — your personalised recommendation will appear here.</span>
         </div>
@@ -670,6 +707,11 @@
       resultBox.classList.remove("has-content");
       linksBox.innerHTML = "";
       similarBox.innerHTML = "";
+      const imgWrapReset = document.getElementById("car-image-wrap");
+      const imgReset = document.getElementById("car-image");
+      imgWrapReset.classList.remove("visible");
+      imgReset.classList.remove("loaded");
+      imgReset.src = "";
 
       try {
         const response = await fetch("/api/car", {
@@ -683,9 +725,32 @@
         if (response.ok) {
           const carName = data.car;
           const description = data.recommendation;
+          const imageUrl = data.imageUrl;
 
           resultBox.innerHTML = `<strong>${carName}</strong>${description}`;
           resultBox.classList.add("has-content");
+
+          // Show car image
+          const imgWrapEl = document.getElementById("car-image-wrap");
+          const imgEl = document.getElementById("car-image");
+          const imgFallback = document.getElementById("car-image-fallback");
+
+          if (imageUrl) {
+            imgWrapEl.classList.add("visible");
+            imgFallback.style.display = "none";
+            imgEl.style.display = "block";
+            imgEl.classList.remove("loaded");
+            imgEl.src = imageUrl;
+            imgEl.onload = () => imgEl.classList.add("loaded");
+            imgEl.onerror = () => {
+              imgEl.style.display = "none";
+              imgFallback.style.display = "block";
+            };
+          } else {
+            imgWrapEl.classList.add("visible");
+            imgEl.style.display = "none";
+            imgFallback.style.display = "block";
+          }
 
           const encoded = encodeURIComponent(carName);
 
