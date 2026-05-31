@@ -523,6 +523,88 @@
 
     /* ── Responsive ── */
 
+
+    /* ── Why Section ── */
+    .why-section {
+      background: var(--bg);
+      border-top: 1.5px solid var(--border);
+      border-bottom: 1.5px solid var(--border);
+      padding: 80px 48px;
+    }
+
+    .why-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .why-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .why-header h2 {
+      font-family: 'Orbitron', system-ui, sans-serif;
+      font-weight: 800;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .why-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .why-card {
+      padding: 40px 32px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      text-align: center;
+    }
+
+    .why-card:hover {
+      border-color: var(--accent2);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+      transform: translateY(-4px);
+    }
+
+    .why-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--accent);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      margin: 0 auto 20px;
+    }
+
+    .why-card h3 {
+      font-family: 'Orbitron', system-ui, sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .why-card p {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    @media (max-width: 860px) {
+      .why-section { padding: 48px 20px; }
+      .why-features { grid-template-columns: 1fr; }
+    }
+
     /* ── Footer ── */
     footer {
       background: #0a0a0b;
@@ -619,7 +701,7 @@
     <div class="splash-fade"></div>
 
     <div class="splash-text">
-      <div class="splash-eyebrow">Expert Car Recommendations</div>
+      <div class="splash-eyebrow">AI-Powered Car Recommendations</div>
       <div class="splash-title">Motor<em>Unite</em></div>
     </div>
 
@@ -633,7 +715,7 @@
   <div class="site-wrap" style="padding-top: 50px;">
     <header>
       <div class="logo">Motor<span>Unite</span></div>
-      <div class="badge">beta</div>
+      <div class="badge">AI-Powered</div>
     </header>
 
     <div class="hero">
@@ -895,13 +977,52 @@
   </script>
 
 
+
+  <!-- ── WHY MOTORUNITE ── -->
+  <section class="why-section">
+    <div class="why-inner">
+
+      <div class="why-header">
+        <h2>Why Motor<span style="color:var(--accent2)">Unite</span>?</h2>
+      </div>
+
+      <div class="why-features">
+
+        <div class="why-card">
+          <div class="why-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Built for UK Drivers</h3>
+          <p>Every recommendation is tailored specifically to the UK car market. We factor in UK pricing, fuel costs, insurance bands, and road conditions — so you always get advice that's relevant to where you live and drive.</p>
+        </div>
+
+        <div class="why-card">
+          <div class="why-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <h3>Completely Free</h3>
+          <p>No subscription, no sign-up, no hidden fees. MotorUnite is completely free to use. Just enter your preferences and get your personalised car recommendation instantly — it costs nothing to find your perfect car.</p>
+        </div>
+
+        <div class="why-card">
+          <div class="why-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <h3>Great for First Cars</h3>
+          <p>Not sure where to start with buying your first car? MotorUnite is perfect for first-time buyers in the UK. Tell us your budget and how you'll use it — we'll cut through the noise and recommend the ideal first car for you.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
   <!-- ── FOOTER ── -->
   <footer>
     <div class="footer-inner">
 
       <div class="footer-brand">
         <div class="footer-logo">Motor<span>Unite</span></div>
-        <p class="footer-tagline">The smarter way to find your car.</p>
+        <p class="footer-tagline">Finding your perfect car, powered by AI.</p>
       </div>
 
       <div class="footer-socials">
@@ -930,9 +1051,9 @@
       <div class="footer-credits">
         <span>AI powered by Groq</span>
         <span class="footer-dot">·</span>
-        <span>Built by William Peng</span>
+        <span>Built with Anthropic Claude</span>
         <span class="footer-dot">·</span>
-        <span>© 2026 MotorUnite</span>
+        <span>© 2026 Motorunite</span>
       </div>
 
     </div>
