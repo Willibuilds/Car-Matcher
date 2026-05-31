@@ -63,7 +63,6 @@
       transition: none;
     }
 
-    /* Dark vignette overlay */
     .splash-vignette {
       position: absolute;
       inset: 0;
@@ -72,7 +71,6 @@
       z-index: 1;
     }
 
-    /* Bottom fade to white */
     .splash-fade {
       position: absolute;
       bottom: 0;
@@ -521,9 +519,6 @@
 
     .placeholder-text { font-size: 14px; color: #c0c0c0; font-style: italic; }
 
-    /* ── Responsive ── */
-
-
     /* ── Why Section ── */
     .why-section {
       background: var(--bg);
@@ -600,11 +595,6 @@
       line-height: 1.75;
     }
 
-    @media (max-width: 860px) {
-      .why-section { padding: 48px 20px; }
-      .why-features { grid-template-columns: 1fr; }
-    }
-
     /* ── Footer ── */
     footer {
       background: #0a0a0b;
@@ -677,15 +667,53 @@
     .footer-dot { color: rgba(255,255,255,0.2); }
 
     @media (max-width: 860px) {
-      footer { padding: 36px 20px; }
-      .footer-inner { flex-direction: column; align-items: flex-start; }
-      .footer-credits { justify-content: flex-start; }
-      header { padding: 18px 20px; }
-      .hero { flex-direction: column; padding: 40px 20px 36px; align-items: flex-start; }
-      .layout { grid-template-columns: 1fr; }
-      .panel { border-right: none; border-bottom: 1.5px solid var(--border); }
+      /* Header */
+      header { padding: 12px 20px; }
+
+      /* Splash */
+      .splash-img-wrap img { object-position: 65% center; }
+      .splash-title { font-size: clamp(36px, 11vw, 64px); }
+      .splash-text { top: 8vh; }
+
+      /* Hero */
+      .hero {
+        flex-direction: column;
+        padding: 36px 20px 28px;
+        align-items: flex-start;
+        gap: 20px;
+      }
+      h1 { font-size: clamp(36px, 9vw, 56px); }
+      .subtitle { max-width: 100%; align-self: flex-start; padding-bottom: 0; }
+
+      /* Panels — force single column, disable expand */
+      .layout,
+      .layout.focus-1,
+      .layout.focus-2,
+      .layout.focus-3 {
+        grid-template-columns: 1fr !important;
+        transition: none !important;
+      }
+
+      .panel {
+        border-right: none;
+        border-bottom: 1.5px solid var(--border);
+        padding: 24px 20px;
+      }
+
       .panel:last-child { border-bottom: none; }
-      .splash-title { font-size: clamp(42px, 12vw, 80px); }
+
+      /* Result car name smaller on mobile */
+      #result strong { font-size: 28px; }
+
+      /* Why section */
+      .why-section { padding: 48px 20px; }
+      .why-features { grid-template-columns: 1fr; gap: 16px; }
+      .why-card { padding: 28px 20px; }
+
+      /* Footer */
+      footer { padding: 36px 20px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
+      .footer-credits { justify-content: flex-start; }
     }
   </style>
 </head>
@@ -715,7 +743,7 @@
   <div class="site-wrap" style="padding-top: 50px;">
     <header>
       <div class="logo">Motor<span>Unite</span></div>
-      <div class="badge">Beta</div>
+      <div class="badge">beta</div>
     </header>
 
     <div class="hero">
@@ -811,173 +839,6 @@
     </div>
   </div>
 
-  <script>
-    /* ── Scroll-driven zoom + fade on splash ── */
-    const splash = document.getElementById('splash');
-    const imgWrap = document.getElementById('splashImgWrap');
-
-    function onScroll() {
-      const scrollY = window.scrollY;
-      const splashH = splash.offsetHeight;
-      const progress = Math.min(scrollY / splashH, 1); // 0 → 1
-
-      // Zoom: scale from 1 → 1.35
-      const scale = 1 + progress * 0.35;
-      // Fade: opacity 1 → 0 (starts fading at 30% scroll)
-      const fadeProgress = Math.max(0, (progress - 0.2) / 0.6);
-      const opacity = Math.max(0, 1 - fadeProgress);
-
-      imgWrap.style.transform = `scale(${scale})`;
-      imgWrap.style.opacity = opacity;
-
-      // Also fade the splash text out early
-      const textEl = splash.querySelector('.splash-text');
-      const textFade = Math.max(0, 1 - progress * 3);
-      textEl.style.opacity = textFade;
-
-      const hintEl = splash.querySelector('.scroll-hint');
-      hintEl.style.opacity = Math.max(0, 1 - progress * 4);
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    /* ── Panel expand logic ── */
-    const layout = document.querySelector(".layout");
-    const panel1 = document.querySelectorAll(".panel")[0];
-    const panel2 = document.querySelectorAll(".panel")[1];
-    const panel3 = document.querySelectorAll(".panel")[2];
-
-    function setFocus(cls) {
-      layout.classList.remove("focus-1", "focus-2", "focus-3");
-      if (cls) layout.classList.add(cls);
-    }
-
-    // Section 1 expands when user interacts with form
-    panel1.addEventListener("focusin", () => setFocus("focus-1"));
-    panel1.addEventListener("focusout", (e) => {
-      if (!panel1.contains(e.relatedTarget)) setFocus(null);
-    });
-
-    // Section 3 expands on hover (with slight delay)
-    let hoverTimer;
-    panel3.addEventListener("mouseenter", () => {
-      hoverTimer = setTimeout(() => setFocus("focus-3"), 180);
-    });
-    panel3.addEventListener("mouseleave", () => {
-      clearTimeout(hoverTimer);
-      setFocus(null);
-    });
-
-    /* ── Form logic ── */
-    const btn = document.getElementById("find");
-    const resultBox = document.getElementById("result");
-    const linksBox = document.getElementById("car-links");
-    const similarBox = document.getElementById("similar-links");
-    const budgetEl = document.getElementById("budget");
-    const useEl = document.getElementById("use");
-    const fuelEl = document.getElementById("fuel");
-
-    function updateSteps() {
-      document.getElementById("step1").classList.toggle("active", !!budgetEl.value.trim());
-      document.getElementById("step2").classList.toggle("active", !!useEl.value);
-      document.getElementById("step3").classList.toggle("active", !!fuelEl.value);
-    }
-
-    budgetEl.addEventListener("input", updateSteps);
-    useEl.addEventListener("change", updateSteps);
-    fuelEl.addEventListener("change", updateSteps);
-
-    btn.addEventListener("click", async () => {
-      const budget = budgetEl.value.trim();
-      const use = useEl.value;
-      const fuel = fuelEl.value;
-
-      if (!budget || !use || !fuel) {
-        resultBox.innerHTML = '<span style="color:#0057FF;font-size:14px;">Please fill in all three fields.</span>';
-        return;
-      }
-
-      btn.disabled = true;
-      btn.classList.add("loading");
-      const original = btn.textContent;
-      btn.textContent = "Analysing...";
-      resultBox.innerHTML = '<span class="placeholder-text">Generating your recommendation…</span>';
-      resultBox.classList.remove("has-content");
-      linksBox.innerHTML = "";
-      similarBox.innerHTML = "";
-      const imgWrapReset = document.getElementById("car-image-wrap");
-      const imgReset = document.getElementById("car-image");
-      imgWrapReset.classList.remove("visible");
-      imgReset.classList.remove("loaded");
-      imgReset.src = "";
-
-      try {
-        const response = await fetch("/api/car", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ budget, use, fuel })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          const carName = data.car;
-          const description = data.recommendation;
-          const imageUrl = data.imageUrl;
-
-          resultBox.innerHTML = `<strong>${carName}</strong>${description}`;
-          resultBox.classList.add("has-content");
-          setFocus("focus-2");
-
-          // Show car image
-          const imgWrapEl = document.getElementById("car-image-wrap");
-          const imgEl = document.getElementById("car-image");
-          const imgFallback = document.getElementById("car-image-fallback");
-
-          if (imageUrl) {
-            imgWrapEl.classList.add("visible");
-            imgFallback.style.display = "none";
-            imgEl.style.display = "block";
-            imgEl.classList.remove("loaded");
-            imgEl.src = imageUrl;
-            imgEl.onload = () => imgEl.classList.add("loaded");
-            imgEl.onerror = () => {
-              imgEl.style.display = "none";
-              imgFallback.style.display = "block";
-            };
-          } else {
-            imgWrapEl.classList.add("visible");
-            imgEl.style.display = "none";
-            imgFallback.style.display = "block";
-          }
-
-          const encoded = encodeURIComponent(carName);
-
-          linksBox.innerHTML = `
-            <a href="https://www.youtube.com/results?search_query=${encoded}+review" target="_blank">YouTube Reviews</a>
-          `;
-
-          similarBox.innerHTML = `
-            <a href="https://www.google.com/search?q=best+alternatives+to+${encoded}" target="_blank">Best Alternatives</a>
-            <a href="https://www.google.com/search?q=cars+similar+to+${encoded}" target="_blank">Cars Similar To This</a>
-            <a href="https://www.google.com/search?q=competitors+to+${encoded}" target="_blank">Top Competitors</a>
-          `;
-
-        } else {
-          resultBox.innerHTML = `<span style="color:#0057FF;">${data.error || "Something went wrong."}</span>`;
-        }
-      } catch (err) {
-        resultBox.innerHTML = '<span style="color:#0057FF;">Could not reach the server.</span>';
-      }
-
-      btn.disabled = false;
-      btn.classList.remove("loading");
-      btn.textContent = original;
-    });
-  </script>
-
-
-
   <!-- ── WHY MOTORUNITE ── -->
   <section class="why-section">
     <div class="why-inner">
@@ -1051,13 +912,173 @@
       <div class="footer-credits">
         <span>AI powered by Groq</span>
         <span class="footer-dot">·</span>
-        <span>Developed by William Peng</span>
+        <span>Built by William Peng</span>
         <span class="footer-dot">·</span>
         <span>© 2026 MotorUnite</span>
       </div>
 
     </div>
   </footer>
+
+  <script>
+    /* ── Scroll-driven zoom + fade on splash ── */
+    const splash = document.getElementById('splash');
+    const imgWrap = document.getElementById('splashImgWrap');
+
+    function onScroll() {
+      const scrollY = window.scrollY;
+      const splashH = splash.offsetHeight;
+      const progress = Math.min(scrollY / splashH, 1);
+
+      const scale = 1 + progress * 0.35;
+      const fadeProgress = Math.max(0, (progress - 0.2) / 0.6);
+      const opacity = Math.max(0, 1 - fadeProgress);
+
+      imgWrap.style.transform = `scale(${scale})`;
+      imgWrap.style.opacity = opacity;
+
+      const textEl = splash.querySelector('.splash-text');
+      const textFade = Math.max(0, 1 - progress * 3);
+      textEl.style.opacity = textFade;
+
+      const hintEl = splash.querySelector('.scroll-hint');
+      hintEl.style.opacity = Math.max(0, 1 - progress * 4);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    /* ── Panel expand logic ── */
+    const layout = document.querySelector(".layout");
+    const panel1 = document.querySelectorAll(".panel")[0];
+    const panel2 = document.querySelectorAll(".panel")[1];
+    const panel3 = document.querySelectorAll(".panel")[2];
+
+    function setFocus(cls) {
+      if (window.innerWidth <= 860) return; // disable on mobile
+      layout.classList.remove("focus-1", "focus-2", "focus-3");
+      if (cls) layout.classList.add(cls);
+    }
+
+    panel1.addEventListener("focusin", () => setFocus("focus-1"));
+    panel1.addEventListener("focusout", (e) => {
+      if (!panel1.contains(e.relatedTarget)) setFocus(null);
+    });
+
+    let hoverTimer;
+    panel3.addEventListener("mouseenter", () => {
+      hoverTimer = setTimeout(() => setFocus("focus-3"), 180);
+    });
+    panel3.addEventListener("mouseleave", () => {
+      clearTimeout(hoverTimer);
+      setFocus(null);
+    });
+
+    /* ── Form logic ── */
+    const btn = document.getElementById("find");
+    const resultBox = document.getElementById("result");
+    const linksBox = document.getElementById("car-links");
+    const similarBox = document.getElementById("similar-links");
+    const budgetEl = document.getElementById("budget");
+    const useEl = document.getElementById("use");
+    const fuelEl = document.getElementById("fuel");
+
+    function updateSteps() {
+      document.getElementById("step1").classList.toggle("active", !!budgetEl.value.trim());
+      document.getElementById("step2").classList.toggle("active", !!useEl.value);
+      document.getElementById("step3").classList.toggle("active", !!fuelEl.value);
+    }
+
+    budgetEl.addEventListener("input", updateSteps);
+    useEl.addEventListener("change", updateSteps);
+    fuelEl.addEventListener("change", updateSteps);
+
+    btn.addEventListener("click", async () => {
+      const budget = budgetEl.value.trim();
+      const use = useEl.value;
+      const fuel = fuelEl.value;
+
+      if (!budget || !use || !fuel) {
+        resultBox.innerHTML = '<span style="color:#0057FF;font-size:14px;">Please fill in all three fields.</span>';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.classList.add("loading");
+      const original = btn.textContent;
+      btn.textContent = "Analysing...";
+      resultBox.innerHTML = '<span class="placeholder-text">Generating your recommendation…</span>';
+      resultBox.classList.remove("has-content");
+      linksBox.innerHTML = "";
+      similarBox.innerHTML = "";
+      const imgWrapReset = document.getElementById("car-image-wrap");
+      const imgReset = document.getElementById("car-image");
+      imgWrapReset.classList.remove("visible");
+      imgReset.classList.remove("loaded");
+      imgReset.src = "";
+
+      try {
+        const response = await fetch("/api/car", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ budget, use, fuel })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          const carName = data.car;
+          const description = data.recommendation;
+          const imageUrl = data.imageUrl;
+
+          resultBox.innerHTML = `<strong>${carName}</strong>${description}`;
+          resultBox.classList.add("has-content");
+          setFocus("focus-2");
+
+          const imgWrapEl = document.getElementById("car-image-wrap");
+          const imgEl = document.getElementById("car-image");
+          const imgFallback = document.getElementById("car-image-fallback");
+
+          if (imageUrl) {
+            imgWrapEl.classList.add("visible");
+            imgFallback.style.display = "none";
+            imgEl.style.display = "block";
+            imgEl.classList.remove("loaded");
+            imgEl.src = imageUrl;
+            imgEl.onload = () => imgEl.classList.add("loaded");
+            imgEl.onerror = () => {
+              imgEl.style.display = "none";
+              imgFallback.style.display = "block";
+            };
+          } else {
+            imgWrapEl.classList.add("visible");
+            imgEl.style.display = "none";
+            imgFallback.style.display = "block";
+          }
+
+          const encoded = encodeURIComponent(carName);
+
+          linksBox.innerHTML = `
+            <a href="https://www.youtube.com/results?search_query=${encoded}+review" target="_blank">YouTube Reviews</a>
+          `;
+
+          similarBox.innerHTML = `
+            <a href="https://www.google.com/search?q=best+alternatives+to+${encoded}" target="_blank">Best Alternatives</a>
+            <a href="https://www.google.com/search?q=cars+similar+to+${encoded}" target="_blank">Cars Similar To This</a>
+            <a href="https://www.google.com/search?q=competitors+to+${encoded}" target="_blank">Top Competitors</a>
+          `;
+
+        } else {
+          resultBox.innerHTML = `<span style="color:#0057FF;">${data.error || "Something went wrong."}</span>`;
+        }
+      } catch (err) {
+        resultBox.innerHTML = '<span style="color:#0057FF;">Could not reach the server.</span>';
+      }
+
+      btn.disabled = false;
+      btn.classList.remove("loading");
+      btn.textContent = original;
+    });
+  </script>
 
 </body>
 </html>
