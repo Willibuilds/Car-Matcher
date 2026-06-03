@@ -671,9 +671,14 @@
       header { padding: 12px 20px; }
 
       /* Splash */
-      .splash-img-wrap img { object-position: 65% center; }
+      .splash-img-wrap img {
+        object-fit: contain;
+        object-position: center center;
+        width: 100%;
+        height: 100%;
+      }
       .splash-title { font-size: clamp(36px, 11vw, 64px); }
-      .splash-text { top: 8vh; }
+      .splash-text { top: 6vh; }
 
       /* Hero */
       .hero {
