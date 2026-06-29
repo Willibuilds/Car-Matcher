@@ -275,9 +275,9 @@
       transition: grid-template-columns 0.55s cubic-bezier(0.16,1,0.3,1);
     }
 
-    .layout.focus-1 { grid-template-columns: 3fr 2fr 1fr; }
-    .layout.focus-2 { grid-template-columns: 1fr 3.5fr 1.5fr; }
-    .layout.focus-3 { grid-template-columns: 1fr 2fr 3fr; }
+    .layout.focus-1 { grid-template-columns: 2.5fr 2.3fr 1.5fr; }
+    .layout.focus-2 { grid-template-columns: 1.5fr 3fr 1.8fr; }
+    .layout.focus-3 { grid-template-columns: 1.5fr 2.3fr 2.5fr; }
 
     /* ── Panels ── */
     .panel {
@@ -941,19 +941,19 @@
       const splashH = splash.offsetHeight;
       const progress = Math.min(scrollY / splashH, 1);
 
-      const scale = 1 + progress * 0.15;
-      const fadeProgress = Math.max(0, (progress - 0.45) / 0.5);
+      const scale = 1 + progress * 0.35;
+      const fadeProgress = Math.max(0, (progress - 0.2) / 0.6);
       const opacity = Math.max(0, 1 - fadeProgress);
 
       imgWrap.style.transform = `scale(${scale})`;
       imgWrap.style.opacity = opacity;
 
       const textEl = splash.querySelector('.splash-text');
-      const textFade = Math.max(0, 1 - progress * 1.8);
+      const textFade = Math.max(0, 1 - progress * 3);
       textEl.style.opacity = textFade;
 
       const hintEl = splash.querySelector('.scroll-hint');
-      hintEl.style.opacity = Math.max(0, 1 - progress * 2.5);
+      hintEl.style.opacity = Math.max(0, 1 - progress * 4);
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
