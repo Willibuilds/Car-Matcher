@@ -54,17 +54,22 @@ export default async function handler(req, res) {
 
         if (topResult) {
           // Step 2: Fetch the page summary and image for the top result
-          const pageTitle = encodeURIComponent(topResult.title);
+          // IMPORTANT: REST API needs underscores for spaces, not %20
+          const restTitle = encodeURIComponent(topResult.title.replace(/ /g, "_"));
           const summaryRes = await fetch(
-            `https://en.wikipedia.org/api/rest_v1/page/summary/${pageTitle}`
+            `https://en.wikipedia.org/api/rest_v1/page/summary/${restTitle}`
           );
-          const summaryData = await summaryRes.json();
-          imageUrl = summaryData?.originalimage?.source || summaryData?.thumbnail?.source || null;
 
-          // Step 3: If no image in summary, try the page images API
+          if (summaryRes.ok) {
+            const summaryData = await summaryRes.json();
+            imageUrl = summaryData?.originalimage?.source || summaryData?.thumbnail?.source || null;
+          }
+
+          // Step 3: If no image in summary, try the page images API (action API handles spaces fine via encodeURIComponent)
           if (!imageUrl) {
+            const actionTitle = encodeURIComponent(topResult.title);
             const imgRes = await fetch(
-              `https://en.wikipedia.org/w/api.php?action=query&titles=${pageTitle}&prop=pageimages&format=json&pithumbsize=800&origin=*`
+              `https://en.wikipedia.org/w/api.php?action=query&titles=${actionTitle}&prop=pageimages&format=json&pithumbsize=800&origin=*`
             );
             const imgData = await imgRes.json();
             const pages = imgData?.query?.pages;
@@ -79,6 +84,8 @@ export default async function handler(req, res) {
         imageUrl = null;
       }
     }
+
+    console.log("Image search for:", parsed.searchTerm || parsed.car, "→ result:", imageUrl ? "found" : "not found");
 
     res.status(200).json({
       car: parsed.car || "Unknown",
