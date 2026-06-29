@@ -38,54 +38,73 @@ export default async function handler(req, res) {
     const raw = data.choices?.[0]?.message?.content || "{}";
     const parsed = JSON.parse(raw);
 
-    // Improved Wikipedia image fetch — search first, then get image
+    // Helper: safely fetch + parse JSON, returns null on any failure (never throws)
+    async function safeFetchJson(url, label) {
+      try {
+        const r = await fetch(url, {
+          headers: { "User-Agent": "MotorUnite/1.0 (contact@motorunite.com)" }
+        });
+        const text = await r.text();
+
+        if (!r.ok) {
+          console.log(`[${label}] HTTP ${r.status} for ${url}`);
+          console.log(`[${label}] Response body (first 200 chars): ${text.slice(0, 200)}`);
+          return null;
+        }
+
+        try {
+          return JSON.parse(text);
+        } catch (parseErr) {
+          console.log(`[${label}] JSON parse failed for ${url}`);
+          console.log(`[${label}] Response body (first 200 chars): ${text.slice(0, 200)}`);
+          return null;
+        }
+      } catch (fetchErr) {
+        console.log(`[${label}] Fetch threw: ${fetchErr.message}`);
+        return null;
+      }
+    }
+
     let imageUrl = null;
 
     if (parsed.searchTerm || parsed.car) {
       const searchQuery = parsed.searchTerm || parsed.car;
 
-      try {
-        // Step 1: Search Wikipedia for the best matching article
-        const searchRes = await fetch(
-          `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchQuery)}&format=json&origin=*&srlimit=3`
-        );
-        const searchData = await searchRes.json();
-        const topResult = searchData?.query?.search?.[0];
+      // Step 1: Search Wikipedia for the best matching article
+      const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchQuery)}&format=json&origin=*&srlimit=3`;
+      const searchData = await safeFetchJson(searchUrl, "search");
+      const topResult = searchData?.query?.search?.[0];
 
-        if (topResult) {
-          // Step 2: Fetch the page summary and image for the top result
-          // IMPORTANT: REST API needs underscores for spaces, not %20
-          const restTitle = encodeURIComponent(topResult.title.replace(/ /g, "_"));
-          const summaryRes = await fetch(
-            `https://en.wikipedia.org/api/rest_v1/page/summary/${restTitle}`
-          );
+      if (topResult) {
+        console.log("Top Wikipedia match:", topResult.title);
 
-          if (summaryRes.ok) {
-            const summaryData = await summaryRes.json();
-            imageUrl = summaryData?.originalimage?.source || summaryData?.thumbnail?.source || null;
-          }
+        // Step 2: Fetch the page summary (REST API needs underscores for spaces)
+        const restTitle = encodeURIComponent(topResult.title.replace(/ /g, "_"));
+        const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${restTitle}`;
+        const summaryData = await safeFetchJson(summaryUrl, "summary");
 
-          // Step 3: If no image in summary, try the page images API (action API handles spaces fine via encodeURIComponent)
-          if (!imageUrl) {
-            const actionTitle = encodeURIComponent(topResult.title);
-            const imgRes = await fetch(
-              `https://en.wikipedia.org/w/api.php?action=query&titles=${actionTitle}&prop=pageimages&format=json&pithumbsize=800&origin=*`
-            );
-            const imgData = await imgRes.json();
-            const pages = imgData?.query?.pages;
-            if (pages) {
-              const page = Object.values(pages)[0];
-              imageUrl = page?.thumbnail?.source || null;
-            }
+        if (summaryData) {
+          imageUrl = summaryData?.originalimage?.source || summaryData?.thumbnail?.source || null;
+        }
+
+        // Step 3: Fallback to pageimages API if summary had no image
+        if (!imageUrl) {
+          const actionTitle = encodeURIComponent(topResult.title);
+          const imgUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${actionTitle}&prop=pageimages&format=json&pithumbsize=800&origin=*`;
+          const imgData = await safeFetchJson(imgUrl, "pageimages");
+
+          const pages = imgData?.query?.pages;
+          if (pages) {
+            const page = Object.values(pages)[0];
+            imageUrl = page?.thumbnail?.source || null;
           }
         }
-      } catch (imgErr) {
-        console.error("Image fetch failed:", imgErr);
-        imageUrl = null;
+      } else {
+        console.log("No Wikipedia search results for:", searchQuery);
       }
     }
 
-    console.log("Image search for:", parsed.searchTerm || parsed.car, "→ result:", imageUrl ? "found" : "not found");
+    console.log("Final image result for", parsed.car, "→", imageUrl ? imageUrl : "NONE");
 
     res.status(200).json({
       car: parsed.car || "Unknown",
@@ -94,7 +113,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error(error);
+    console.error("Top level error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }
