@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>About Us — MotorUnite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="MotorUnite was built to fix car buying in the UK. One tool, one recommendation, zero nonsense." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&family=Exo+2:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&family=Exo+2:wght@400;500;600&display=swap" /></noscript>
+
+  <style>
+    :root {
+      --bg: #f5f5f0;
+      --surface: #ffffff;
+      --surface2: #f9f9f7;
+      --border: #e4e4de;
+      --accent: #1a1a2e;
+      --accent2: #0057FF;
+      --text: #111118;
+      --muted: #3a3a3a;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Exo 2', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── Header ── */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 48px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1.5px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Orbitron', system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--accent2); }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1.5px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--surface2);
+      text-decoration: none;
+      transition: border-color 0.2s;
+    }
+
+    .badge:hover { border-color: var(--accent2); color: var(--accent2); }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 140px 48px 80px;
+      background: var(--surface);
+      border-bottom: 1.5px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 24px;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 2px;
+      background: var(--accent2);
+      border-radius: 2px;
+    }
+
+    .hero h1 {
+      font-family: 'Orbitron', system-ui, sans-serif;
+      font-weight: 800;
+      font-size: clamp(38px, 6vw, 72px);
+      line-height: 1;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 28px;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent2);
+    }
+
+    .hero-lead {
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1.7;
+      max-width: 620px;
+    }
+
+    /* ── Content sections ── */
+    .content-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* ── Problem section ── */
+    .problem {
+      padding: 72px 0;
+      border-bottom: 1.5px solid var(--border);
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .problem h2 {
+      font-family: 'Orbitron', system-ui, sans-serif;
+      font-weight: 800;
+      font-size: clamp(24px, 3.5vw, 40px);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 24px;
+    }
+
+    .problem h2 em {
+      font-style: normal;
+      color: var(--accent2);
+    }
+
+    .problem p {
+      font-size: 17px;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1.75;
+      max-width: 680px;
+    }
+
+    .problem p + p { margin-top: 16px; }
+
+    /* ── Pull quote ── */
+    .pull-quote {
+      padding: 72px 0;
+      border-bottom: 1.5px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 32px;
+    }
+
+    .pull-quote-bar {
+      width: 3px;
+      min-height: 100%;
+      background: var(--accent2);
+      border-radius: 3px;
+      flex-shrink: 0;
+      align-self: stretch;
+    }
+
+    .pull-quote blockquote {
+      font-family: 'Orbitron', system-ui, sans-serif;
+      font-size: clamp(20px, 3vw, 32px);
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .pull-quote blockquote em {
+      font-style: normal;
+      color: var(--accent2);
+    }
+
+    /* ── How it works ── */
+    .how {
+      padding: 72px 0;
+      border-bottom: 1.5px solid var(--border);
+    }
+
+    .how h2 {
+      font-family: 'Orbitron', system-ui, sans-serif;
+      font-weight: 800;
+      font-size: clamp(24px, 3.5vw, 40px);
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 48px;
+    }
+
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .how-step {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .how-step-num {
+      font-family: 'Orbitron', system-ui, sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--accent2);
+      line-height: 1;
+    }
+
+    .how-step h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .how-step p {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── CTA ── */
+    .cta-section {
+      padding: 80px 0;
+      text-align: center;
+    }
+
+    .cta-section h2 {
+      font-family: 'Orbitron', system-ui, sans-serif;
+      font-weight: 800;
+      font-size: clamp(24px, 3.5vw, 40px);
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .cta-section h2 em {
+      font-style: normal;
+      color: var(--accent2);
+    }
+
+    .cta-section p {
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--text);
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      padding: 16px 40px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: 'Exo 2', system-ui, sans-serif;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+      box-shadow: 0 4px 20px rgba(26,26,46,0.2);
+    }
+
+    .cta-btn:hover {
+      background: #2a2a4e;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(26,26,46,0.28);
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: #0a0a0b;
+      color: #ffffff;
+      padding: 48px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .footer-logo {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .footer-logo span { color: #0057FF; }
+
+    .footer-tagline {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      font-weight: 300;
+    }
+
+    .footer-socials { display: flex; gap: 12px; }
+
+    .social-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+
+    .social-icon:hover {
+      border-color: #0057FF;
+      color: #ffffff;
+      background: rgba(0,87,255,0.15);
+    }
+
+    .footer-credits {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.35);
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .footer-dot { color: rgba(255,255,255,0.2); }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      header { padding: 12px 20px; }
+      .hero { padding: 110px 20px 56px; }
+      .content-wrap { padding: 0 20px; }
+      .how-steps { grid-template-columns: 1fr; gap: 32px; }
+      .values-grid { grid-template-columns: 1fr; }
+      .pull-quote { flex-direction: column; gap: 16px; }
+      .pull-quote-bar { width: 40px; height: 3px; align-self: auto; }
+      footer { padding: 36px 20px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .footer-credits { justify-content: flex-start; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <a href="/" class="logo">Motor<span>Unite</span></a>
+    <a href="/" class="badge">← Back to Tool</a>
+  </header>
+
+  <!-- Hero -->
+  <div style="background: var(--surface); border-bottom: 1.5px solid var(--border);">
+    <div class="hero">
+      <div class="hero-eyebrow">About MotorUnite</div>
+      <h1>Car buying is broken.<br>We <em>fixed</em> it.</h1>
+      <p class="hero-lead">MotorUnite is a free AI-powered car recommendation tool built for UK drivers who are tired of endless comparison sites, pushy salespeople, and conflicting advice. We ask three questions. We give you one answer.</p>
+    </div>
+  </div>
+
+  <div class="content-wrap">
+
+    <!-- The Problem -->
+    <div class="problem">
+      <div class="section-label">The Problem</div>
+      <h2>The UK car market is <em>overwhelming</em></h2>
+      <p>There are thousands of models available in the UK at any given time. Comparison sites show you hundreds of results. Dealerships have their own agenda. Friends and family all have different opinions. And most people — especially first-time buyers — have no framework for deciding what actually matters to them.</p>
+      <p>The result? People spend weeks researching, visit multiple dealerships, feel pressured into decisions, and still aren't sure they bought the right car. It's one of the most stressful purchases most people will ever make — and it doesn't need to be.</p>
+    </div>
+
+    <!-- Pull quote -->
+    <div class="pull-quote">
+      <div class="pull-quote-bar"></div>
+      <blockquote>"Tell us your budget, how you drive, and what fuel you prefer. We'll tell you <em>exactly</em> which car to buy."</blockquote>
+    </div>
+
+    <!-- How it works -->
+    <div class="how">
+      <div class="section-label">How It Works</div>
+      <h2>Three questions. One recommendation.</h2>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-step-num">01</div>
+          <h3>Tell us about yourself</h3>
+          <p>Enter your budget, how you primarily use a car — daily commuting, family trips, city driving — and your fuel preference. That's it.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">02</div>
+          <h3>Our AI gets to work</h3>
+          <p>MotorUnite's recommendation engine — powered by Llama 3.1, one of the world's most advanced AI models — analyses your inputs against the UK car market in seconds.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">03</div>
+          <h3>Get your match</h3>
+          <p>We give you one car. Not a list of fifty. One carefully considered recommendation, with links to reviews, alternatives, and where to buy — all in one place.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <h2>Ready to find your <em>perfect car?</em></h2>
+      <p>Takes thirty seconds. Completely free. No sign-up required.</p>
+      <a href="/" class="cta-btn">Find My Car</a>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">Motor<span>Unite</span></div>
+        <p class="footer-tagline">The smarter way to find your car.</p>
+      </div>
+
+      <div class="footer-socials">
+        <a href="#" class="social-icon" aria-label="TikTok">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/>
+          </svg>
+        </a>
+        <a href="#" class="social-icon" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
+          </svg>
+        </a>
+        <a href="#" class="social-icon" aria-label="X">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="footer-credits">
+        <span>AI powered by Groq</span>
+        <span class="footer-dot">·</span>
+        <span>Built by William Peng</span>
+        <span class="footer-dot">·</span>
+        <span>© 2026 MotorUnite</span>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
