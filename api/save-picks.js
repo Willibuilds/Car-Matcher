@@ -1,3 +1,5 @@
+import { put } from "@vercel/blob";
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -15,27 +17,16 @@ export default async function handler(req, res) {
       picks
     };
 
-    const blobRes = await fetch("https://blob.vercel-storage.com/daily-picks.json", {
-      method: "PUT",
-      headers: {
-        "Authorization": `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`,
-        "Content-Type": "application/json",
-        "x-content-type": "application/json",
-        "x-add-random-suffix": "0"
-      },
-      body: JSON.stringify(payload)
+    await put("daily-picks.json", JSON.stringify(payload), {
+      access: "public",
+      addRandomSuffix: false,
+      contentType: "application/json"
     });
-
-    if (!blobRes.ok) {
-      const err = await blobRes.text();
-      console.error("Blob save failed:", err);
-      return res.status(500).json({ error: "Failed to save picks" });
-    }
 
     res.status(200).json({ success: true });
 
   } catch (error) {
     console.error("Save picks error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Internal server error: " + error.message });
   }
 }
