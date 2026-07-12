@@ -394,10 +394,9 @@
         const res = await fetch(`/api/generate-picks?password=${encodeURIComponent(adminPassword)}`);
         const data = await res.json();
 
-        if (res.ok && data.picks) {
-          const picksArray = data.picks.picks || data.picks;
-          renderEditor(Array.isArray(picksArray) ? picksArray : defaultPicks);
-          showStatus("✓ Picks generated and saved successfully!", "success");
+        if (res.ok && data.success) {
+          showStatus("✓ Picks generated and saved! Reloading...", "success");
+          setTimeout(() => loadCurrentPicks(), 1500);
         } else {
           showStatus("✗ Generation failed: " + (data.error || JSON.stringify(data)), "error");
         }
