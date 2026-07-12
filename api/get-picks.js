@@ -1,4 +1,4 @@
-import { list } from "@vercel/blob";
+import { list, download } from "@vercel/blob";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -6,17 +6,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    // List blobs to find daily-picks.json
     const { blobs } = await list({ prefix: "daily-picks.json" });
 
     if (!blobs || blobs.length === 0) {
       return res.status(404).json({ error: "No picks available yet" });
     }
 
-    // Fetch the blob content from its public URL
     const blob = blobs[0];
-    const dataRes = await fetch(blob.url);
-    const picks = await dataRes.json();
+    const { body } = await download(blob.url);
+    const text = await new Response(body).text();
+    const picks = JSON.parse(text);
 
     res.status(200).json(picks);
 
