@@ -59,9 +59,8 @@ export default async function handler(req, res) {
     const raw = groqData.choices?.[0]?.message?.content || "{}";
     const parsed = JSON.parse(raw);
 
-    // Save to Vercel Blob using SDK
     await put("daily-picks.json", JSON.stringify(parsed), {
-      access: "public",
+      access: "private",
       addRandomSuffix: false,
       contentType: "application/json"
     });
