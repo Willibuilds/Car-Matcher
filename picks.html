@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Daily Picks — MotorUnite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="MotorUnite's daily AI-generated car picks for UK drivers. Updated every day with budget, value, and premium recommendations." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" /></noscript>
+
+  <style>
+    :root {
+      --bg: #f5f5f0;
+      --surface: #ffffff;
+      --surface2: #f9f9f7;
+      --border: #e4e4de;
+      --accent: #1a1a2e;
+      --accent2: #0057FF;
+      --text: #111118;
+      --muted: #8a8a8a;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 48px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1.5px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Orbitron', system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--accent2); }
+
+    .header-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-link {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover { color: var(--accent2); }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1.5px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--surface2);
+      text-decoration: none;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 120px 48px 60px;
+      background: var(--surface);
+      border-bottom: 1.5px solid var(--border);
+    }
+
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 40px;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 16px;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 2px;
+      background: var(--accent2);
+      border-radius: 2px;
+    }
+
+    .hero h1 {
+      font-family: 'Orbitron', system-ui, sans-serif;
+      font-weight: 800;
+      font-size: clamp(36px, 5vw, 64px);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent2);
+    }
+
+    .hero-date {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      flex-shrink: 0;
+      align-self: flex-end;
+      padding-bottom: 4px;
+    }
+
+    /* Picks grid */
+    .picks-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 56px 48px 80px;
+    }
+
+    .picks-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .pick-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+
+    .pick-card:hover {
+      border-color: var(--accent2);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+    }
+
+    .pick-image {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      background: #0a0a0b;
+      display: block;
+    }
+
+    .pick-image-placeholder {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #0a0a0b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      font-size: 13px;
+    }
+
+    .pick-body {
+      padding: 24px;
+    }
+
+    .pick-category {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      background: rgba(0,87,255,0.08);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    .pick-car {
+      font-family: 'Orbitron', system-ui, sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 6px;
+      line-height: 1.1;
+    }
+
+    .pick-price {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .pick-description {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .pick-links {
+      display: flex;
+      gap: 8px;
+    }
+
+    .pick-link {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      transition: border-color 0.18s, background 0.18s;
+      text-align: center;
+    }
+
+    .pick-link:hover {
+      border-color: var(--accent2);
+      background: rgba(0,87,255,0.05);
+      color: var(--accent2);
+    }
+
+    /* Loading state */
+    .loading-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .loading-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent2);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Footer */
+    footer {
+      background: #0a0a0b;
+      color: #ffffff;
+      padding: 48px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .footer-logo {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .footer-logo span { color: #0057FF; }
+    .footer-tagline { font-size: 13px; color: rgba(255,255,255,0.4); font-weight: 300; }
+
+    .footer-credits {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.35);
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .footer-dot { color: rgba(255,255,255,0.2); }
+
+    @media (max-width: 860px) {
+      header { padding: 12px 20px; }
+      .hero { padding: 90px 20px 40px; }
+      .hero-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .picks-wrap { padding: 32px 20px 60px; }
+      .picks-grid { grid-template-columns: 1fr; }
+      footer { padding: 36px 20px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .footer-credits { justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="/index.html" class="logo">Motor<span>Unite</span></a>
+    <div class="header-links">
+      <a href="/index.html" class="nav-link">Find My Car</a>
+      <a href="/about.html" class="nav-link">About Us</a>
+      <div class="badge">Daily Picks</div>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-eyebrow">AI Generated</div>
+        <h1>Today's <em>top picks.</em></h1>
+      </div>
+      <div class="hero-date" id="picks-date">Loading...</div>
+    </div>
+  </div>
+
+  <div class="picks-wrap">
+    <div id="picks-container">
+      <div class="loading-state">
+        <div class="loading-spinner"></div>
+        Loading today's picks...
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">Motor<span>Unite</span></div>
+        <p class="footer-tagline">The smarter way to find your car.</p>
+      </div>
+      <div class="footer-credits">
+        <span>AI powered by Groq</span>
+        <span class="footer-dot">·</span>
+        <span>Built by William Peng</span>
+        <span class="footer-dot">·</span>
+        <span>© 2026 MotorUnite</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    async function loadPicks() {
+      try {
+        const res = await fetch("/api/get-picks");
+        if (!res.ok) throw new Error("No picks available");
+        const data = await res.json();
+
+        // Format date nicely
+        const date = new Date(data.date);
+        document.getElementById("picks-date").textContent = date.toLocaleDateString("en-GB", {
+          weekday: "long", day: "numeric", month: "long", year: "numeric"
+        });
+
+        const container = document.getElementById("picks-container");
+        container.innerHTML = `<div class="picks-grid">${data.picks.map(pick => renderCard(pick)).join("")}</div>`;
+
+      } catch (err) {
+        document.getElementById("picks-container").innerHTML = `
+          <div class="loading-state">
+            No picks available yet — check back soon!<br>
+            <small style="margin-top:8px;display:block;">Picks are generated fresh every day.</small>
+          </div>`;
+      }
+    }
+
+    function renderCard(pick) {
+      const encoded = encodeURIComponent(pick.car);
+      return `
+        <div class="pick-card">
+          <div class="pick-image-placeholder">
+            <span>Loading image...</span>
+          </div>
+          <div class="pick-body">
+            <span class="pick-category">${pick.category}</span>
+            <div class="pick-car">${pick.car}</div>
+            <div class="pick-price">${pick.price}</div>
+            <div class="pick-description">${pick.description}</div>
+            <div class="pick-links">
+              <a href="https://www.youtube.com/results?search_query=${encoded}+review" target="_blank" class="pick-link">▶ Reviews</a>
+              <a href="https://www.google.com/search?q=${encoded}+for+sale+UK" target="_blank" class="pick-link">Buy One</a>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    loadPicks();
+  </script>
+
+</body>
+</html>
