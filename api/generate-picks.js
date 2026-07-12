@@ -59,14 +59,14 @@ export default async function handler(req, res) {
     const raw = groqData.choices?.[0]?.message?.content || "{}";
     const parsed = JSON.parse(raw);
 
-    await put("daily-picks.json", JSON.stringify(parsed), {
-      access: "private",
+    const blob = await put("daily-picks.json", JSON.stringify(parsed), {
+      access: "public",
       addRandomSuffix: false,
       contentType: "application/json"
     });
 
-    console.log("Daily picks generated and saved for", parsed.date);
-    res.status(200).json({ success: true, picks: parsed });
+    console.log("Daily picks saved to:", blob.url);
+    res.status(200).json({ success: true, picks: parsed, url: blob.url });
 
   } catch (error) {
     console.error("Generate picks error:", error);
