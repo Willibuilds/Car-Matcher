@@ -1,4 +1,4 @@
-import { list, download } from "@vercel/blob";
+import { list } from "@vercel/blob";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -12,10 +12,11 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: "No picks available yet" });
     }
 
+    // Fetch from public URL directly
     const blob = blobs[0];
-    const { body } = await download(blob.url);
-    const text = await new Response(body).text();
-    const picks = JSON.parse(text);
+    const dataRes = await fetch(blob.url);
+    if (!dataRes.ok) throw new Error("Failed to fetch blob content");
+    const picks = await dataRes.json();
 
     res.status(200).json(picks);
 
