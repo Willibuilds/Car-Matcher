@@ -3,5 +3,11 @@
     "env": {
       "NODEJS_VERSION": "18"
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/generate-picks",
+      "schedule": "0 0 * * *"
+    }
+  ]
 }
