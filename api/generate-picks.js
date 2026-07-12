@@ -1,3 +1,5 @@
+import { put } from "@vercel/blob";
+
 export default async function handler(req, res) {
   const ADMIN_PASSWORD = "ClaudeCode123!";
 
@@ -9,7 +11,7 @@ export default async function handler(req, res) {
     const prompt = `
     You are an expert automotive advisor for the UK market.
     Generate exactly 3 great daily car recommendations for UK drivers.
-    Mix it up — include a mix of budgets and car types (e.g. one budget pick, one mid-range, one premium).
+    Mix it up — include a mix of budgets and car types (one budget pick, one mid-range, one premium).
     Focus on cars that are well-suited to UK roads, pricing, and lifestyle.
     Respond ONLY with a JSON object in this exact format, no other text:
     {
@@ -57,29 +59,18 @@ export default async function handler(req, res) {
     const raw = groqData.choices?.[0]?.message?.content || "{}";
     const parsed = JSON.parse(raw);
 
-    // Save to Vercel Blob
-    const blobRes = await fetch("https://blob.vercel-storage.com/daily-picks.json", {
-      method: "PUT",
-      headers: {
-        "Authorization": `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`,
-        "Content-Type": "application/json",
-        "x-content-type": "application/json",
-        "x-add-random-suffix": "0"
-      },
-      body: JSON.stringify(parsed)
+    // Save to Vercel Blob using SDK
+    await put("daily-picks.json", JSON.stringify(parsed), {
+      access: "public",
+      addRandomSuffix: false,
+      contentType: "application/json"
     });
-
-    if (!blobRes.ok) {
-      const err = await blobRes.text();
-      console.error("Blob save failed:", err);
-      return res.status(500).json({ error: "Failed to save picks" });
-    }
 
     console.log("Daily picks generated and saved for", parsed.date);
     res.status(200).json({ success: true, picks: parsed });
 
   } catch (error) {
     console.error("Generate picks error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Internal server error: " + error.message });
   }
 }
