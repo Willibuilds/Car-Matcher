@@ -66,7 +66,7 @@ export default async function handler(req, res) {
     });
 
     console.log("Daily picks saved to:", blob.url);
-    res.status(200).json({ success: true, picks: parsed, url: blob.url });
+    res.status(200).json({ success: true, picks: parsed.picks, date: parsed.date });
 
   } catch (error) {
     console.error("Generate picks error:", error);
