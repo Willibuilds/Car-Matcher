@@ -399,7 +399,7 @@
           renderEditor(Array.isArray(picksArray) ? picksArray : defaultPicks);
           showStatus("✓ Picks generated and saved successfully!", "success");
         } else {
-          showStatus("✗ Generation failed: " + (data.error || "Unknown error"), "error");
+          showStatus("✗ Generation failed: " + (data.error || JSON.stringify(data)), "error");
         }
       } catch (err) {
         showStatus("✗ Network error: " + err.message, "error");
