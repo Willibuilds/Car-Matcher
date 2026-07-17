@@ -406,24 +406,89 @@
       }
     }
 
-    function renderCard(pick) {
-      const encoded = encodeURIComponent(pick.car);
+    function renderCard(pick, index) {
+      const encoded = encodeURIComponent(pick.car || "");
       return `
-        <div class="pick-card">
-          <div class="pick-image-placeholder">
-            <span>Loading image...</span>
+        <div class="pick-card" id="card-${index}">
+          <div class="pick-image-placeholder" id="img-placeholder-${index}">
+            <span style="color:#555;font-size:13px;">Loading image...</span>
           </div>
           <div class="pick-body">
-            <span class="pick-category">${pick.category}</span>
-            <div class="pick-car">${pick.car}</div>
-            <div class="pick-price">${pick.price}</div>
-            <div class="pick-description">${pick.description}</div>
+            <span class="pick-category">${pick.category || "Pick"}</span>
+            <div class="pick-car">${pick.car || "Unknown"}</div>
+            <div class="pick-price">${pick.price || ""}</div>
+            <div class="pick-description">${pick.description || ""}</div>
             <div class="pick-links">
               <a href="https://www.youtube.com/results?search_query=${encoded}+review" target="_blank" class="pick-link">▶ Reviews</a>
               <a href="https://www.google.com/search?q=${encoded}+for+sale+UK" target="_blank" class="pick-link">Buy One</a>
             </div>
           </div>
         </div>`;
+    }
+
+    async function fetchImage(pick, index) {
+      try {
+        const searchQuery = pick.searchTerm || pick.car;
+        const searchRes = await fetch(
+          `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchQuery)}&format=json&origin=*&srlimit=1`
+        );
+        const searchData = await searchRes.json();
+        const topResult = searchData?.query?.search?.[0];
+
+        if (topResult) {
+          const restTitle = encodeURIComponent(topResult.title.replace(/ /g, "_"));
+          const summaryRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${restTitle}`);
+          if (summaryRes.ok) {
+            const summaryData = await summaryRes.json();
+            const imageUrl = summaryData?.originalimage?.source || summaryData?.thumbnail?.source;
+            if (imageUrl) {
+              const placeholder = document.getElementById(`img-placeholder-${index}`);
+              if (placeholder) {
+                placeholder.outerHTML = `<img class="pick-image" src="${imageUrl}" alt="${pick.car}" loading="lazy" />`;
+              }
+              return;
+            }
+          }
+        }
+        // No image found — remove placeholder
+        const placeholder = document.getElementById(`img-placeholder-${index}`);
+        if (placeholder) placeholder.style.display = "none";
+      } catch {
+        const placeholder = document.getElementById(`img-placeholder-${index}`);
+        if (placeholder) placeholder.style.display = "none";
+      }
+    }
+
+    async function loadPicks() {
+      try {
+        const res = await fetch("/api/get-picks");
+        if (!res.ok) throw new Error("No picks available");
+        const data = await res.json();
+
+        console.log("Picks data:", data);
+
+        const picks = data.picks || data;
+        if (!Array.isArray(picks) || picks.length === 0) throw new Error("No picks found");
+
+        const date = new Date(data.date || new Date());
+        document.getElementById("picks-date").textContent = date.toLocaleDateString("en-GB", {
+          weekday: "long", day: "numeric", month: "long", year: "numeric"
+        });
+
+        const container = document.getElementById("picks-container");
+        container.innerHTML = `<div class="picks-grid">${picks.map((pick, i) => renderCard(pick, i)).join("")}</div>`;
+
+        // Fetch images after cards are rendered
+        picks.forEach((pick, i) => fetchImage(pick, i));
+
+      } catch (err) {
+        console.error("Load picks error:", err);
+        document.getElementById("picks-container").innerHTML = `
+          <div class="loading-state">
+            No picks available yet — check back soon!<br>
+            <small style="margin-top:8px;display:block;">Picks are generated fresh every day.</small>
+          </div>`;
+      }
     }
 
     loadPicks();
