@@ -1,23 +1,27 @@
-import { list } from "@vercel/blob";
-
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    const { blobs } = await list({ prefix: "daily-picks.json" });
+    // Fetch directly from the public blob URL
+    const storeId = process.env.BLOB_STORE_ID;
+    const blobUrl = `https://${storeId}.public.blob.vercel-storage.com/daily-picks.json`;
+    
+    const dataRes = await fetch(blobUrl, {
+      headers: { "Cache-Control": "no-cache" }
+    });
 
-    if (!blobs || blobs.length === 0) {
+    if (!dataRes.ok) {
+      console.log("Blob fetch failed:", dataRes.status, blobUrl);
       return res.status(404).json({ error: "No picks available yet" });
     }
 
-    // Fetch from public URL directly
-    const blob = blobs[0];
-    const dataRes = await fetch(blob.url);
-    if (!dataRes.ok) throw new Error("Failed to fetch blob content");
     const picks = await dataRes.json();
+    console.log("Picks fetched successfully:", JSON.stringify(picks).slice(0, 100));
 
+    // Set cache headers to avoid stale data
+    res.setHeader("Cache-Control", "no-store");
     res.status(200).json(picks);
 
   } catch (error) {
