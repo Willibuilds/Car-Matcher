@@ -8,6 +8,14 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Check API key exists
+    if (!process.env.GROQ_API_KEY) {
+      console.error("GROQ_API_KEY is not set!");
+      return res.status(500).json({ error: "GROQ_API_KEY environment variable is missing" });
+    }
+
+    console.log("Calling Groq API...");
+
     const prompt = `
     You are an expert automotive advisor for the UK market.
     Generate exactly 3 great daily car recommendations for UK drivers.
@@ -55,9 +63,26 @@ export default async function handler(req, res) {
       })
     });
 
+    console.log("Groq response status:", groqRes.status);
+
+    if (!groqRes.ok) {
+      const errText = await groqRes.text();
+      console.error("Groq API error:", errText);
+      return res.status(500).json({ error: "Groq API failed: " + errText });
+    }
+
     const groqData = await groqRes.json();
+    console.log("Groq raw response:", JSON.stringify(groqData).slice(0, 300));
+
     const raw = groqData.choices?.[0]?.message?.content || "{}";
+    console.log("Groq content:", raw.slice(0, 300));
+
     const parsed = JSON.parse(raw);
+    console.log("Parsed picks count:", parsed.picks?.length);
+
+    if (!parsed.picks || parsed.picks.length === 0) {
+      return res.status(500).json({ error: "Groq returned no picks. Raw: " + raw.slice(0, 200) });
+    }
 
     const blob = await put("daily-picks.json", JSON.stringify(parsed), {
       access: "public",
