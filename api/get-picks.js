@@ -4,12 +4,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Fetch directly from the public blob URL
-    const storeId = process.env.BLOB_STORE_ID;
+    // BLOB_STORE_ID includes "store_" prefix, strip it for the URL
+    const storeId = process.env.BLOB_STORE_ID?.replace(/^store_/, "") || "";
     const blobUrl = `https://${storeId}.public.blob.vercel-storage.com/daily-picks.json`;
-    
+
+    console.log("Fetching from:", blobUrl);
+
     const dataRes = await fetch(blobUrl, {
-      headers: { "Cache-Control": "no-cache" }
+      cache: "no-store"
     });
 
     if (!dataRes.ok) {
@@ -18,9 +20,8 @@ export default async function handler(req, res) {
     }
 
     const picks = await dataRes.json();
-    console.log("Picks fetched successfully:", JSON.stringify(picks).slice(0, 100));
+    console.log("Picks fetched OK, keys:", Object.keys(picks));
 
-    // Set cache headers to avoid stale data
     res.setHeader("Cache-Control", "no-store");
     res.status(200).json(picks);
 
